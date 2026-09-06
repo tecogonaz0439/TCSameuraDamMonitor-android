@@ -1,0 +1,549 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "1a5bbc71ab0556ffdd881053bdcc6740",
+    "entities": [
+      {
+        "tableName": "dam_data",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`observationStationId` TEXT NOT NULL, `observationStationName` TEXT NOT NULL, `riverSystemName` TEXT NOT NULL, `riverName` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, `catchmentAverageRainfall` REAL, `storageVolume` REAL, `storageVolumeTrend` TEXT NOT NULL, `inflow` REAL, `outflow` REAL, `storagePercentage` REAL, `storagePercentageTrend` TEXT NOT NULL, `storagePercentageTime` TEXT, `storagePercentageDayChange` REAL, `storagePercentageDayChangeTrend` TEXT NOT NULL, `storagePercentageWeekChange` REAL, `storagePercentageWeekChangeTrend` TEXT NOT NULL, `storage_volume_for_message` REAL, `historicalDataJson` TEXT NOT NULL, `lastFetchTimeMillis` INTEGER NOT NULL, PRIMARY KEY(`observationStationId`))",
+        "fields": [
+          {
+            "fieldPath": "observationStationId",
+            "columnName": "observationStationId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observationStationName",
+            "columnName": "observationStationName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riverSystemName",
+            "columnName": "riverSystemName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riverName",
+            "columnName": "riverName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "updatedAt",
+            "columnName": "updatedAt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "catchmentAverageRainfall",
+            "columnName": "catchmentAverageRainfall",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "storageVolume",
+            "columnName": "storageVolume",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "storageVolumeTrend",
+            "columnName": "storageVolumeTrend",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "inflow",
+            "columnName": "inflow",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "outflow",
+            "columnName": "outflow",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "storagePercentage",
+            "columnName": "storagePercentage",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "storagePercentageTrend",
+            "columnName": "storagePercentageTrend",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storagePercentageTime",
+            "columnName": "storagePercentageTime",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "storagePercentageDayChange",
+            "columnName": "storagePercentageDayChange",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "storagePercentageDayChangeTrend",
+            "columnName": "storagePercentageDayChangeTrend",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storagePercentageWeekChange",
+            "columnName": "storagePercentageWeekChange",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "storagePercentageWeekChangeTrend",
+            "columnName": "storagePercentageWeekChangeTrend",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "storageVolumeForMessage",
+            "columnName": "storage_volume_for_message",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "historicalDataJson",
+            "columnName": "historicalDataJson",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastFetchTimeMillis",
+            "columnName": "lastFetchTimeMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "observationStationId"
+          ]
+        }
+      },
+      {
+        "tableName": "debug_log",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timestamp_millis` INTEGER NOT NULL, `message` TEXT NOT NULL, `details` TEXT NOT NULL DEFAULT '')",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestampMillis",
+            "columnName": "timestamp_millis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "details",
+            "columnName": "details",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        }
+      },
+      {
+        "tableName": "historical_dam_data",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `searchMetaId` INTEGER NOT NULL, `timeStr` TEXT NOT NULL, `timeMillis` INTEGER NOT NULL, `catchmentAverageRainfall` REAL, `storageVolume` REAL, `inflow` REAL, `outflow` REAL, `storagePercentage` REAL, FOREIGN KEY(`searchMetaId`) REFERENCES `historical_search_meta`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "searchMetaId",
+            "columnName": "searchMetaId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeStr",
+            "columnName": "timeStr",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeMillis",
+            "columnName": "timeMillis",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "catchmentAverageRainfall",
+            "columnName": "catchmentAverageRainfall",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "storageVolume",
+            "columnName": "storageVolume",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "inflow",
+            "columnName": "inflow",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "outflow",
+            "columnName": "outflow",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "storagePercentage",
+            "columnName": "storagePercentage",
+            "affinity": "REAL"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_historical_dam_data_searchMetaId",
+            "unique": false,
+            "columnNames": [
+              "searchMetaId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_historical_dam_data_searchMetaId` ON `${TABLE_NAME}` (`searchMetaId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "historical_search_meta",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "searchMetaId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "historical_search_meta",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sortOrder` INTEGER NOT NULL, `observationStationId` TEXT NOT NULL, `observationStationName` TEXT NOT NULL, `riverSystemName` TEXT NOT NULL, `riverName` TEXT NOT NULL, `damConfigId` TEXT NOT NULL, `searchBgnDate` TEXT NOT NULL, `searchEndDate` TEXT NOT NULL, `fetchedAt` INTEGER NOT NULL, `dataStartTimeStr` TEXT, `dataEndTimeStr` TEXT, `dataStartStoragePct` REAL, `dataEndStoragePct` REAL, `dataMinStoragePct` REAL, `dataMaxStoragePct` REAL, `isPinned` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sortOrder",
+            "columnName": "sortOrder",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observationStationId",
+            "columnName": "observationStationId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observationStationName",
+            "columnName": "observationStationName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riverSystemName",
+            "columnName": "riverSystemName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "riverName",
+            "columnName": "riverName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "damConfigId",
+            "columnName": "damConfigId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "searchBgnDate",
+            "columnName": "searchBgnDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "searchEndDate",
+            "columnName": "searchEndDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fetchedAt",
+            "columnName": "fetchedAt",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dataStartTimeStr",
+            "columnName": "dataStartTimeStr",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dataEndTimeStr",
+            "columnName": "dataEndTimeStr",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "dataStartStoragePct",
+            "columnName": "dataStartStoragePct",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "dataEndStoragePct",
+            "columnName": "dataEndStoragePct",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "dataMinStoragePct",
+            "columnName": "dataMinStoragePct",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "dataMaxStoragePct",
+            "columnName": "dataMaxStoragePct",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "isPinned",
+            "columnName": "isPinned",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_historical_search_meta_damConfigId_searchBgnDate_searchEndDate",
+            "unique": true,
+            "columnNames": [
+              "damConfigId",
+              "searchBgnDate",
+              "searchEndDate"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_historical_search_meta_damConfigId_searchBgnDate_searchEndDate` ON `${TABLE_NAME}` (`damConfigId`, `searchBgnDate`, `searchEndDate`)"
+          }
+        ]
+      },
+      {
+        "tableName": "sudmonitor_history",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`damId` TEXT NOT NULL, `periodStartEpochMs` INTEGER, `periodEndEpochMs` INTEGER, `status` TEXT NOT NULL, `rowCount` INTEGER NOT NULL, `firstStorageRatePct` REAL, `lastStorageRatePct` REAL, `minStorageRatePct` REAL, `maxStorageRatePct` REAL, `fetchedAtEpochMs` INTEGER NOT NULL, `nextUpdateAtEpochMs` INTEGER NOT NULL, `rawDatPath` TEXT, `updatedAtEpochMs` INTEGER NOT NULL, PRIMARY KEY(`damId`))",
+        "fields": [
+          {
+            "fieldPath": "damId",
+            "columnName": "damId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "periodStartEpochMs",
+            "columnName": "periodStartEpochMs",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "periodEndEpochMs",
+            "columnName": "periodEndEpochMs",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rowCount",
+            "columnName": "rowCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "firstStorageRatePct",
+            "columnName": "firstStorageRatePct",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "lastStorageRatePct",
+            "columnName": "lastStorageRatePct",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "minStorageRatePct",
+            "columnName": "minStorageRatePct",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "maxStorageRatePct",
+            "columnName": "maxStorageRatePct",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "fetchedAtEpochMs",
+            "columnName": "fetchedAtEpochMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nextUpdateAtEpochMs",
+            "columnName": "nextUpdateAtEpochMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rawDatPath",
+            "columnName": "rawDatPath",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "updatedAtEpochMs",
+            "columnName": "updatedAtEpochMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "damId"
+          ]
+        }
+      },
+      {
+        "tableName": "sudmonitor_history_observation",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`damId` TEXT NOT NULL, `rowNo` INTEGER NOT NULL, `timeText` TEXT NOT NULL, `timeEpochMs` INTEGER NOT NULL, `rainfallHourlyMm` REAL, `storageVolume1000m3` REAL, `inflowM3s` REAL, `outflowM3s` REAL, `storageRatePct` REAL, PRIMARY KEY(`damId`, `rowNo`), FOREIGN KEY(`damId`) REFERENCES `sudmonitor_history`(`damId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "damId",
+            "columnName": "damId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rowNo",
+            "columnName": "rowNo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeText",
+            "columnName": "timeText",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeEpochMs",
+            "columnName": "timeEpochMs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rainfallHourlyMm",
+            "columnName": "rainfallHourlyMm",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "storageVolume1000m3",
+            "columnName": "storageVolume1000m3",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "inflowM3s",
+            "columnName": "inflowM3s",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "outflowM3s",
+            "columnName": "outflowM3s",
+            "affinity": "REAL"
+          },
+          {
+            "fieldPath": "storageRatePct",
+            "columnName": "storageRatePct",
+            "affinity": "REAL"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "damId",
+            "rowNo"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_sudmonitor_history_observation_damId_timeEpochMs",
+            "unique": false,
+            "columnNames": [
+              "damId",
+              "timeEpochMs"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_sudmonitor_history_observation_damId_timeEpochMs` ON `${TABLE_NAME}` (`damId`, `timeEpochMs`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "sudmonitor_history",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "damId"
+            ],
+            "referencedColumns": [
+              "damId"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1a5bbc71ab0556ffdd881053bdcc6740')"
+    ]
+  }
+}

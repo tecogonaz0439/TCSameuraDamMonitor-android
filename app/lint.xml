@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!-- ic_launcher_monochrome.png is intentionally identical to ic_launcher_foreground.png
+         because the monochrome layer serves themed-icon purpose on Android 13+. -->
+    <issue id="IconDuplicates" severity="ignore" />
+    <!-- ic_stat_dam.xml is a detailed dam-shaped notification icon.
+         Precision was already reduced from 7264→6182 chars (1 decimal).
+         Further reduction would risk distorting the icon at 24dp. -->
+    <issue id="VectorPath" severity="ignore" />
+</lint>

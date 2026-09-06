@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FileProvider 共有パス設定。デバッグログの一時ファイル共有に使用する。 -->
+<paths>
+    <cache-path name="debug_log" path="debug-log/" />
+</paths>

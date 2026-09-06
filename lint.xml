@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <!--
+        Existing Compose UI code still uses Locale.getDefault() and Context.getString()
+        in several composables. Keep lint visible as warnings and address this as a
+        focused UI/localization cleanup instead of blocking unrelated changes.
+    -->
+    <issue id="NonObservableLocale" severity="warning" />
+    <issue id="LocalContextConfigurationRead" severity="warning" />
+    <issue id="LocalContextGetResourceValueCall" severity="warning" />
+</lint>

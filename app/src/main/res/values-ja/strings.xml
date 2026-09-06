@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="settings_debug_backup_failed">現在のデータを待避できなかったため、デバッグモードを有効にしませんでした。</string>
+    <string name="settings_debug_restore_failed">待避データを復元できなかったため、デバッグモードを有効なまま維持します。</string>
+    <string name="app_name">早明浦ダム 貯水率モニタ</string>
+    <string name="activity_main_title">早明浦ダム 貯水率モニタ</string>
+    <string name="main_title_realtime_data">リアルタイムデータ表示</string>
+    <string name="main_title_historical_data">過去データ表示</string>
+    <string name="main_title_daily_history_data">過去データ(日次)表示</string>
+    <string name="title_activity_settings">設定(Settings)</string>
+    <string name="desc_reload">再読み込み</string>
+    <string name="desc_more_options">その他のオプション</string>
+    <string name="desc_back">戻る</string>
+    <string name="desc_menu">メニュー</string>
+    <string name="desc_expand_sidebar">サイドバーを開く</string>
+    <string name="desc_collapse_sidebar">サイドバーを閉じる</string>
+    <string name="desc_historical_range">過去データ表示期間</string>
+    <string name="desc_historical_range_reset">過去データ表示期間を解除</string>
+    <string name="action_share_text">テキストを共有</string>
+    <string name="action_share_error">共有できませんでした: %1$s</string>
+    <string name="action_copy_link_title">タイトルをコピー</string>
+    <string name="action_share_link_title">タイトルを共有</string>
+    <string name="action_copy_geo_url">geo URIをコピー</string>
+    <string name="action_share_geo_url">geo URIを共有</string>
+    <string name="action_open_url">URLを開く</string>
+    <string name="action_open_url_with">他のブラウザで開く …</string>
+    <string name="action_share_url">URLを共有</string>
+    <string name="action_open_map">地図を開く</string>
+
+    <string name="dialog_open_with_title">アプリケーションを選択</string>
+    <string name="action_cancel">キャンセル</string>
+
+    <string name="main_refresh_too_early">%1$s以降に手動更新が可能になります</string>
+    <string name="main_autorenew_disabled">自動更新が無効です。</string>
+    <string name="main_autorenew_in_progress">自動更新が進行中です。</string>
+    <string name="main_initial_load_in_progress">初回の読込が進行中です。</string>
+    <string name="main_manual_update_in_progress">手動更新が進行中です。</string>
+    <string name="main_autorenew_enabled_first">自動更新が有効です。\n(間隔: %1$s　次回(予定): %2$s)</string>
+    <string name="main_autorenew_enabled_with_last">自動更新が有効です。\n(間隔: %1$s　前回(実績): %2$s)</string>
+
+
+
+    <string name="settings_debug_simulate_error_msg">Simulated loading error</string>
+    <string name="error_debug_file_read">デバッグ用 .dat ファイルの読み込みに失敗しました</string>
+    <string name="error_debug_file_too_large">デバッグファイルが最大サイズ（10 MiB）を超えています</string>
+    <string name="error_file_write">ファイルの書き込みに失敗しました</string>
+    <string name="error_dat_url_not_found">HTML内に .dat ファイルのURLが見つかりませんでした</string>
+
+    <!-- Main Screen Strings -->
+    <string name="main_station_id">観測所記号</string>
+    <string name="main_station_name">観測所名</string>
+    <string name="main_river_system">水系名</string>
+    <string name="main_river_name">河川名</string>
+    <string name="main_latest_data">観測データ(最新)</string>
+    <string name="main_history_data">観測データ(一覧)</string>
+    <string name="main_history_col_datetime">日時</string>
+    <string name="main_history_col_rainfall">雨量\n(mm/10min)</string>
+    <string name="main_history_col_volume">貯水量\n(×10³m³)</string>
+    <string name="main_history_col_inflow">流入量\n(m³/s)</string>
+    <string name="main_history_col_outflow">放流量\n(m³/s)</string>
+    <string name="main_history_col_storage">貯水率\n(%)</string>
+    <string name="main_history_load_all">全期間の観測データを表示</string>
+    <string name="title_observation_history_list">観測データ一覧</string>
+    <string name="observation_history_empty">観測データがありません。</string>
+    <string name="main_data_fetch_time">読込時刻: %1$s</string>
+    <string name="main_data_update_time">データ時刻: %1$s</string>
+    <string name="main_observation_data">観測所データ</string>
+    <string name="main_url_card_title">リンク集</string>
+    <string name="main_percentage_time">データ時刻(貯水率): %1$s</string>
+
+    <string name="main_rainfall">流域平均雨量 (mm/10min)</string>
+    <string name="main_storage_volume">貯水量 (×10³m³)</string>
+    <string name="main_inflow">流入量 (m³/s)</string>
+    <string name="main_outflow">放流量 (m³/s)</string>
+    <string name="main_storage_percentage">貯水率 (%)</string>
+    <string name="main_storage_percentage_day_change">貯水率(前日比)(%)</string>
+    <string name="summary_storage_percentage_day_change">前日比</string>
+    <string name="main_storage_percentage_week_change">貯水率(前週比)(%)</string>
+
+    <!-- グラフカード用ラベル -->
+    <string name="graph_label_period">期間:</string>
+    <string name="graph_label_rainfall_total">流域平均雨量:</string>
+    <string name="graph_label_rainfall_max">流域平均雨量 最大:</string>
+    <string name="graph_label_storage_rate_max">貯水率 最大:</string>
+    <string name="graph_label_storage_rate_min">貯水率 最小:</string>
+    <string name="graph_unit_storage_rate">(%)</string>
+    <string name="graph_unit_rainfall">(mm/10min)</string>
+    <string name="graph_tooltip_rainfall">流域平均雨量:</string>
+    <string name="graph_tooltip_storage_rate">貯水率:</string>
+    <string name="main_graph_observation_title">観測データ(グラフ)</string>
+    <string name="main_graph_rainfall_storage_select">貯水率／流域平均雨量</string>
+    <string name="main_graph_volume_flow_select">貯水量／流入量／放流量</string>
+    <string name="main_graph_rainfall_storage_history_select">貯水率(年比較)／流域平均雨量</string>
+    <string name="main_graph_volume_flow_history_select">貯水量(年比較)／流入量／放流量</string>
+    <string name="graph_historical_comparison_loading">過去データを読み込んでいます…</string>
+    <string name="graph_historical_comparison_error">過去データを読み込めませんでした。</string>
+    <string name="graph_historical_comparison_retry">再試行</string>
+    <string name="graph_line_chip_all_storage_rate">貯水率全て</string>
+    <string name="graph_line_chip_all_storage_volume">貯水量全て</string>
+    <string name="graph_line_chip_storage_rate">貯水率</string>
+    <string name="graph_line_chip_rainfall">流域平均雨量</string>
+    <string name="graph_line_chip_storage_volume">貯水量</string>
+    <string name="graph_line_chip_inflow">流入量</string>
+    <string name="graph_line_chip_outflow">放流量</string>
+    <string name="graph_label_storage_volume_max">貯水量 最大:</string>
+    <string name="graph_label_storage_volume_min">貯水量 最小:</string>
+    <string name="graph_label_inflow_max">流入量 最大:</string>
+    <string name="graph_label_inflow_min">流入量 最小:</string>
+    <string name="graph_label_outflow_max">放流量 最大:</string>
+    <string name="graph_label_outflow_min">放流量 最小:</string>
+    <string name="graph_unit_storage_volume">(×10³m³)</string>
+    <string name="graph_unit_flow">(m³/s)</string>
+    <string name="graph_tooltip_storage_volume">貯水量:</string>
+    <string name="graph_tooltip_inflow">流入量:</string>
+    <string name="graph_tooltip_outflow">放流量:</string>
+    <string name="graph_range_past_72_hours">過去72時間</string>
+    <string name="graph_range_past_48_hours">過去48時間</string>
+    <string name="graph_range_past_24_hours">過去24時間</string>
+    <string name="graph_range_full_range">全期間</string>
+
+
+
+
+    <!-- NavigationDrawer/Permanent ナビゲーション（出典サブコンテンツは言語に関わらず日本語表記） -->
+    <string name="nav_auto_update">自動更新</string>
+    <string name="nav_source">出典</string>
+    <string name="nav_debug">デバッグ</string>
+    <string name="nav_settings">設定(Settings)</string>
+    <string name="nav_app_info">このアプリについて</string>
+    <string name="nav_source_db">国土交通省 水文水質データベース</string>
+    <string name="nav_source_pdl">PDL1.0</string>
+    <string name="nav_source_credit">国土交通省 水文水質データベース(%1$s参照)を加工して作成</string>
+
+    <!-- 貯水率メッセージ(日本語) -->
+
+    <string name="settings_header_system">システム</string>
+    <string name="settings_header_general">一般</string>
+    <string name="settings_header_data_source">データソース</string>
+    <string name="settings_header_debug">デバッグ</string>
+
+    <string name="settings_data_source_realtime">リアルタイムデータ</string>
+    <string name="settings_data_source_realtime_sudmonitor">sudmonitor.kusugami-lab.net</string>
+    <string name="settings_data_source_realtime_mlit">水文水質データベース(MLIT)</string>
+    <string name="settings_data_source_realtime_help_sudmonitor">キャッシュサーバ%1$s からリアルタイムデータを取得します</string>
+    <string name="settings_data_source_realtime_help_mlit">水文水質データベース(MLIT)から直接リアルタイムデータを取得します</string>
+    <string name="settings_data_source_historical">過去データ</string>
+    <string name="settings_data_source_historical_mlit">水文水質データベース(MLIT)</string>
+    <string name="settings_data_source_historical_help_sudmonitor">アプリバンドル、または キャッシュサーバ%1$s から過去データの検索を試みます。データソースに過去データが存在しない場合、またはCloudflare障害などの理由でデータソースが利用できない場合は、水文水質データベース(MLIT)から過去データを検索します</string>
+    <string name="settings_data_source_historical_help_mlit">水文水質データベース(MLIT)から過去データを検索します</string>
+    <string name="settings_data_source_dam_locked">sudmonitor の取得対象ダムに固定されます</string>
+    <string name="settings_data_source_switch_confirm_title">リアルタイムデータソースの切替</string>
+    <string name="settings_data_source_switch_confirm">リアルタイムデータを sudmonitor.kusugami-lab.net に切り替えると、ダムは早明浦ダムに固定されます。</string>
+
+    <string name="debug_settings_enabled">デバッグが有効になりました</string>
+
+    <string name="settings_system_theme">テーマ</string>
+    <string name="settings_system_language">言語(Language)</string>
+    <string name="settings_system_language_system_default">システムのデフォルト (%1$s)</string>
+
+    <string name="dialog_set_title_storage">%1$s</string>
+    <string name="dialog_set_title_other">%1$s</string>
+    <string name="dialog_message_ja_label">メッセージ(日本語)</string>
+    <string name="dialog_message_non_ja_label">メッセージ(日本語以外)</string>
+    <string name="theme_system">システム設定</string>
+    <string name="theme_light">ライトテーマ</string>
+    <string name="theme_dark">ダークテーマ</string>
+
+    <string name="settings_general_auto_update">自動更新</string>
+    <string name="settings_general_auto_update_desc">バックグラウンドで自動的に観測データを取得します。</string>
+    <string name="settings_general_update_on_boot">端末起動時に更新する</string>
+    <string name="settings_general_update_on_boot_desc">端末起動時に自動的に観測データを取得します。</string>
+    <string name="settings_general_show_notification">通知を表示する</string>
+    <string name="settings_general_show_notification_desc">通知を表示します。</string>
+    <string name="settings_notification_permission_denied">通知の権限が拒否されました。システム設定で有効にできます。</string>
+    <string name="settings_general_auto_update_interval">自動更新 間隔</string>
+    <string name="settings_general_auto_update_interval_one_week">1週間 (7日間隔)</string>
+    <string name="settings_general_auto_update_interval_one_day">1日</string>
+    <string name="settings_general_auto_update_interval_12_hours">12時間</string>
+    <string name="settings_general_auto_update_interval_one_hour">1時間</string>
+    <string name="settings_general_auto_update_daily_history_note">過去データ(日次)の自動更新間隔は1日になります</string>
+    <string name="settings_general_auto_update_last">自動更新 前回(実績)</string>
+
+    <string name="settings_general_auto_update_next_timing">自動更新 次回</string>
+    <string name="settings_general_auto_update_next_hint">次回の自動更新タイミングを設定します</string>
+    <string name="settings_general_auto_update_rescheduled_warning">(ネットワーク接続状態やAndroid標準の省電力機能、端末メーカ独自の省電力機能などにより間隔がずれることがあります)</string>
+
+    <string name="settings_general_messages_sameura">貯水率メッセージ</string>
+
+    <string name="settings_show_storage_message">貯水率メッセージを表示する</string>
+    <string name="settings_show_storage_message_desc">ダムの貯水率に応じたメッセージを表示します。</string>
+    <string name="settings_storage_messages_sameura_title">貯水率メッセージ(早明浦ダム)</string>
+    <string name="settings_storage_messages_other_title">貯水率メッセージ(早明浦ダム以外)</string>
+    <string name="settings_storage_rate_label_80_100" tools:ignore="TypographyDashes">貯水率 80-100%</string>
+    <string name="settings_storage_rate_label_60_80">貯水量 80,000×10³m³以上</string>
+    <string name="settings_storage_rate_label_40_60">貯水量 60,000×10³m³以上80,000×10³m³未満</string>
+    <string name="settings_storage_rate_label_20_40">貯水量 40,000×10³m³以上60,000×10³m³未満</string>
+    <string name="settings_storage_rate_label_0_20">貯水量 40,000×10³m³未満</string>
+    <string name="settings_storage_rate_label_0">貯水率 0%</string>
+
+    <string name="settings_dam_dam_name">ダム</string>
+    <string name="settings_dam_url_data">国土交通省 リアルタイムダム諸量一覧表</string>
+    <string name="settings_dam_url_disaster">国土交通省 川の防災情報</string>
+    <string name="settings_dam_url_site_info">国土交通省 水文水質観測所情報</string>
+    <string name="settings_dam_url_search">国土交通省 任意期間ダム諸量検索</string>
+
+    <string name="settings_dam_geo">位置情報 (geo URI)</string>
+
+    <string name="settings_debug_mode">デバッグモード</string>
+    <string name="settings_debug_mode_desc">ローカルテスト用のデバッグモードを有効にします。</string>
+    <string name="settings_debug_dat_file_realtime_title">デバッグ用 .dat ファイル(リアルタイムデータ)</string>
+    <string name="settings_debug_dat_file_historical_daily_title">デバッグ用 .dat ファイル(過去データ(日次))</string>
+    <string name="settings_debug_dat_file_builtin">組込データファイルを使用</string>
+    <string name="settings_debug_dat_file_latest_realtime">最新リアルタイムデータを使用</string>
+    <string name="settings_debug_dat_file_latest_historical_daily">最新過去データ(日次)を使用</string>
+    <string name="settings_debug_dat_file_select_realtime">選択したリアルタイムデータを使用</string>
+    <string name="settings_debug_dat_file_select_historical_daily">選択した過去データを使用</string>
+
+    <string name="settings_debug_default_used">組込データファイルを使用</string>
+
+    <string name="settings_debug_data_period">デバッグモード データ期間(リアルタイムデータ)</string>
+    <string name="settings_debug_data_period_all">全て</string>
+    <string name="settings_debug_data_period_custom">期間を指定</string>
+    <string name="settings_debug_data_period_start_time">開始時刻</string>
+    <string name="settings_debug_data_period_end_date">終了日付</string>
+    <string name="settings_debug_data_period_end_time">終了時刻</string>
+    <string name="settings_debug_data_period_note">データの期間は、%1$s 〜 %2$s となります。</string>
+    <string name="settings_debug_data_period_set_button">設定</string>
+    <string name="settings_debug_data_period_auto_advance">観測データ取得ごとにデータ期間(リアルタイムデータ)を更新</string>
+    <string name="settings_debug_data_period_auto_advance_desc">リアルタイムデータのデバッグ期間を次のデータ行へ1件ずつ進めます。</string>
+
+    <string name="settings_loading_error_message">観測データ取得失敗</string>
+    <string name="settings_initial_message">初期メッセージ</string>
+
+    <string name="settings_network_unavailable_message">ネットワーク接続無し</string>
+    <string name="settings_data_distribution_stopped_message">観測データ配信停止</string>
+    <string name="settings_data_distribution_resumed_message">観測データ配信復帰</string>
+    <string name="settings_storage_no_data">貯水率データ配信停止中</string>
+    <string name="settings_all_data_invalid_message">全観測データ配信停止中</string>
+    <string name="settings_header_other_messages">その他のメッセージ</string>
+    <string name="settings_reset_all_messages">全ての貯水率メッセージをリセット</string>
+    <string name="settings_reset_all_other_messages">全てのメッセージをリセット</string>
+    <string name="settings_reset_option_delete">メッセージを削除</string>
+    <string name="settings_reset_option_sameura">うどん県民専用メッセージを設定</string>
+    <string name="settings_reset_option_non_ja">一般向けメッセージを設定</string>
+    <string name="settings_reset_storage_messages_confirm_title">貯水率メッセージ</string>
+    <string name="settings_reset_storage_messages_confirm_message">全ての貯水率メッセージをリセットしますか？この操作は元に戻せません。</string>
+    <string name="settings_reset_other_messages_confirm_title">その他のメッセージ</string>
+    <string name="settings_reset_other_messages_confirm_message">全てのメッセージをリセットしますか？この操作は元に戻せません。</string>
+
+    <string name="settings_not_set">未設定</string>
+
+
+    <string name="settings_debug_export_realtime_dat_file">.dat ファイル(リアルタイムデータ)をエクスポート</string>
+    <string name="settings_debug_export_realtime_dat_file_desc">現在保持しているリアルタイムデータの .dat ファイルをエクスポートします。</string>
+    <string name="settings_debug_export_historical_daily_dat_file">.dat ファイル(過去データ(日次))をエクスポート</string>
+    <string name="settings_debug_export_historical_daily_dat_file_desc">現在保持している過去データ(日次)の .dat ファイルをエクスポートします。</string>
+    <string name="settings_debug_export_encoding_original">オリジナルのエンコーディング</string>
+    <string name="settings_debug_export_encoding_utf8">UTF-8エンコーディング(BOM付き)</string>
+    <string name="settings_debug_export_no_data">エクスポートするデータがありません。</string>
+    <string name="settings_debug_simulate_mode">ネットワーク接続無し・観測データ取得失敗を模擬</string>
+    <string name="settings_debug_simulate_mode_none">模擬しない</string>
+    <string name="settings_debug_simulate_mode_network_unavailable">ネットワーク接続無しを模擬</string>
+    <string name="settings_debug_simulate_mode_loading_failure">観測データ取得失敗を模擬</string>
+    <string name="settings_disable_debug">デバッグを無効にする</string>
+
+    <string name="dialog_state_label">状態 (1文字)</string>
+
+    <string name="dialog_save">保存</string>
+    <string name="dialog_reset">リセット</string>
+    <string name="dialog_cancel">キャンセル</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dam_selection_title">ダムを選択</string>
+    <string name="dam_selection_select_action">選択</string>
+
+    <string name="dialog_error_one_char_only">1文字のみ入力可能です。</string>
+
+
+
+
+
+    <string name="dialog_auto_update_timing_title">自動更新 次回</string>
+    <string name="dialog_auto_update_timing_date">日付</string>
+    <string name="dialog_auto_update_timing_time">時刻</string>
+    <string name="dialog_auto_update_timing_error">現在時刻よりも後の日時を設定してください。</string>
+    <string name="dialog_auto_update_timing_error_min_advance">現在時刻の15分後より後の日時を設定してください。</string>
+    <string name="dialog_initial_auto_update_title">自動更新を有効にしますか？</string>
+    <string name="dialog_initial_auto_update_message">デフォルトでは、1週間に1回(月曜の未明〜明け方)自動的に観測データを取得します。自動更新の間隔やタイミングは設定より変更可能です。</string>
+    <string name="action_yes">はい</string>
+    <string name="action_no">いいえ</string>
+
+    <!-- 通知 -->
+    <string name="notification_channel_name">早明浦ダム 貯水率モニタ</string>
+    <string name="boot_notification_open_app">貯水率を表示するためにアプリをオープンしてください</string>
+
+    <!-- デバッグログ -->
+    <string name="settings_database_vacuum">データベースの空き領域を開放</string>
+    <string name="settings_database_vacuum_desc">アプリの組込データベースの空き領域を開放します。</string>
+    <string name="settings_database_vacuum_done">アプリの組込データベースの空き領域を開放しました（開放前: %1$s、開放後: %2$s）</string>
+    <string name="settings_database_vacuum_failed">データベースの空き領域を開放できませんでした。</string>
+    <string name="settings_database_size_bytes">%1$d B</string>
+    <string name="settings_debug_log">デバッグログ</string>
+    <string name="settings_debug_log_desc">デバッグログを参照します。</string>
+    <string name="title_activity_debug">デバッグ</string>
+    <string name="title_activity_debug_log">デバッグログ</string>
+    <string name="debug_log_empty">ログがありません。</string>
+
+    <string name="debug_log_menu_save">保存</string>
+    <string name="debug_log_menu_share">共有</string>
+    <string name="debug_log_menu_delete_all">ログを削除</string>
+    <string name="debug_log_delete_confirm_title">デバッグログの削除</string>
+    <string name="debug_log_delete_confirm_message">すべてのデバッグログを削除しますか？</string>
+    <string name="debug_log_share_subject">デバッグログ (早明浦ダム 貯水率モニタ)</string>
+
+    <!-- 過去データ検索 -->
+    <string name="nav_realtime_data">リアルタイムデータ</string>
+    <string name="nav_historical_data">過去データ</string>
+    <string name="nav_historical_search">過去データを検索</string>
+    <string name="nav_daily_history_data">過去データ(日次)</string>
+
+
+    <string name="historical_search_dialog_title">過去データを検索</string>
+    <string name="historical_range_dialog_title">過去データ期間指定</string>
+    <string name="historical_search_dam_label">ダム</string>
+    <string name="historical_search_start_date">開始日付</string>
+    <string name="historical_search_end_date">終了日付</string>
+    <string name="historical_search_date_not_selected">日付を選択</string>
+    <string name="historical_search_button">検索</string>
+    <string name="historical_range_display_button">表示</string>
+    <string name="historical_search_searching">検索中…</string>
+    <string name="historical_search_error_unknown">過去データ検索中に不明なエラーが発生しました。</string>
+
+    <string name="historical_search_error_date_range">開始日付は終了日付以前の日付を指定してください。</string>
+
+    <string name="historical_search_error_date_range_too_long">検索期間は31日以内にしてください。</string>
+    <string name="historical_search_error_too_old_date">2002年6月1日以降の日付を指定してください。</string>
+    <string name="historical_range_error_out_of_bounds">検索時の期間内で指定してください。</string>
+
+
+    <string name="graph_unit_rainfall_per_hour">(mm/h)</string>
+    <string name="main_history_col_rainfall_per_hour">雨量\n(mm/h)</string>
+
+
+    <string name="crosshair_enable_label">タップ/ドラッグで値を表示する</string>
+    <string name="nav_historical_manage">過去データを管理</string>
+    <string name="title_historical_manage">過去データを管理</string>
+    <string name="historical_manage_menu_show">開く</string>
+    <string name="historical_manage_menu_move_to_top">一番上に移動</string>
+    <string name="historical_manage_menu_move_up">上に移動</string>
+    <string name="historical_manage_menu_move_down">下に移動</string>
+    <string name="historical_manage_menu_move_to_bottom">一番下に移動</string>
+    <string name="historical_manage_menu_pin">ピン留めする</string>
+    <string name="historical_manage_menu_unpin">ピン留めを解除する</string>
+    <string name="historical_manage_menu_delete">削除</string>
+    <string name="historical_manage_menu_delete_all">すべて削除</string>
+    <string name="historical_manage_pin_limit_message">ピン留め可能な過去データは最大5件までです。</string>
+    <string name="historical_manage_delete_confirm_title">過去データの削除</string>
+    <string name="historical_manage_delete_confirm_message">この過去データを削除しますか？この操作は元に戻せません。</string>
+    <string name="historical_manage_delete_all_confirm_title">過去データをすべて削除</string>
+    <string name="historical_manage_delete_all_confirm_message">すべての過去データを削除しますか？この操作は元に戻せません。</string>
+    <string name="historical_manage_empty">過去データはありません。</string>
+    <string name="historical_search_max_count_snackbar">保存可能な過去データは最大%1$d件までです。</string>
+    <string name="historical_search_error_today_date">今日以降の日付は指定できません。</string>
+    <string name="historical_search_error_network_unavailable">ネットワークに接続できません。接続を確認して再試行してください。</string>
+    <string name="historical_search_error_no_data">指定期間内に観測データが存在しません。</string>
+    <string name="historical_search_error_dam_not_supported">このダムは過去データ検索に対応していません。</string>
+    <string name="historical_search_error_duplicate">同じダム・期間の過去データが既に存在します。</string>
+    <string name="historical_search_error_sudmonitor_daily_loaded">指定期間は sudmonitor の日次過去データとして読み込み済みです。サイドバーの過去データから表示してください。</string>
+    <string name="historical_search_error_dat_url_not_found_html">.dat ファイルのURLがHTMLに見つかりませんでした。</string>
+    <string name="historical_search_error_parse_start_date">開始日付のパースに失敗しました。</string>
+    <string name="historical_search_error_parse_end_date">終了日付のパースに失敗しました。</string>
+    <string name="historical_search_error_local_file_not_found">検索期間をカバーするローカル .dat ファイルが見つかりません。</string>
+    <string name="historical_search_error_meta_fetch_failed">メタ情報の取得に失敗しました。</string>
+    <string name="historical_search_max_count_dialog_title">過去データを検索できません</string>
+    <plurals name="historical_search_error_max_count">
+        <item quantity="other">保存できる過去データは最大%1$d件です。不要な過去データを削除してから再度検索してください。</item>
+    </plurals>
+    <string name="historical_search_duplicate">同じダム・期間の過去データが既に存在します。</string>
+    <string name="historical_search_period_note">データの期間は、%1$s 01:00 〜 %2$s 00:00 となります。</string>
+
+    <string name="app_info_title">このアプリについて</string>
+    <string name="app_info_version">バージョン</string>
+    <string name="app_info_terms_of_use">利用規約</string>
+    <string name="app_info_terms_of_use_ja">利用規約</string>
+    <string name="app_info_license">ライセンス</string>
+    <string name="app_info_license_subtitle">Apache License, Version 2.0</string>
+    <string name="app_info_privacy_policy">プライバシーポリシー</string>
+    <string name="app_info_privacy_policy_ja">プライバシーポリシー</string>
+    <string name="app_info_oss_license">OSSライセンス</string>
+    <string name="app_info_codeberg">リポジトリ(Codeberg)</string>
+    <string name="app_info_github">リポジトリ(GitHub)</string>
+
+    <string name="dialog_version_format">バージョン %1$s (ビルド %2$d)</string>
+    <string name="dialog_terms_of_use_title">利用規約</string>
+    <string name="dialog_terms_of_use_ja_title">利用規約</string>
+    <string name="dialog_license_title">ライセンス</string>
+    <string name="dialog_privacy_policy_title">プライバシーポリシー</string>
+    <string name="dialog_privacy_policy_ja_title">プライバシーポリシー</string>
+    <string name="dialog_oss_license_title">OSSライセンス</string>
+    <string name="url_error_cannot_open">URLを開けません: %1$s</string>
+    <string name="url_error_unsupported_scheme">対応していないURL形式です。</string>
+    <string name="desc_expand">展開</string>
+    <string name="desc_collapse">折りたたみ</string>
+
+    <!-- アクセシビリティ説明 -->
+    <string name="desc_trend_up">傾向: 上昇</string>
+    <string name="desc_trend_down">傾向: 下降</string>
+    <string name="desc_trend_stable">傾向: 変化なし</string>
+    <string name="desc_currently_selected">現在選択中</string>
+    <string name="desc_current_dataset">現在のデータセット</string>
+    <string name="desc_select_theme">テーマを選択</string>
+    <string name="desc_edit_message">メッセージを編集</string>
+    <string name="desc_select_dam">ダムを選択</string>
+    <string name="desc_select_date">日付を選択</string>
+    <string name="desc_select_time">時刻を選択</string>
+    <string name="desc_select_option">オプションを選択</string>
+    <string name="desc_open_link_menu">%1$s のリンクメニューを開く</string>
+    <string name="desc_auto_update_enabled">自動更新オン</string>
+    <string name="desc_auto_update_disabled">自動更新オフ</string>
+    <string name="desc_update_complete">更新完了</string>
+    <string name="desc_navigation_pane">ナビゲーション</string>
+    <string name="desc_main_content_pane">メインコンテンツ</string>
+    <plurals name="desc_graph_summary_data_points">
+        <item quantity="other">%1$d 点</item>
+    </plurals>
+    <string name="desc_graph_summary_detailed">%1$s、%3$s から %4$s までの %2$s。現在値: %5$s。最小: %6$s。最大: %7$s。傾向: %8$s。</string>
+    <string name="desc_graph_previous_point">前のデータポイント</string>
+    <string name="desc_graph_next_point">次のデータポイント</string>
+</resources>

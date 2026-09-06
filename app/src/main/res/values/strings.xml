@@ -1,0 +1,470 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="settings_debug_backup_failed">Could not back up the current data. Debug mode was not enabled.</string>
+    <string name="settings_debug_restore_failed">Could not restore the saved data. Debug mode remains enabled.</string>
+    <string name="app_name">Sameura Dam Monitor</string>
+    <string name="activity_main_title">Sameura Dam Monitor</string>
+    <string name="main_title_realtime_data">Realtime Data Display</string>
+    <string name="main_title_historical_data">Historical Data Display</string>
+    <string name="main_title_daily_history_data">Past Data (Daily) Display</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="desc_reload">Reload</string>
+    <string name="desc_more_options">More options</string>
+    <string name="desc_back">Back</string>
+    <string name="desc_menu">Menu</string>
+    <string name="desc_expand_sidebar">Open sidebar</string>
+    <string name="desc_collapse_sidebar">Close sidebar</string>
+    <string name="desc_historical_range">Historical data display range</string>
+    <string name="desc_historical_range_reset">Clear historical data display range</string>
+    <string name="action_share_text">Share Text</string>
+    <string name="action_share_error">Could not share: %1$s</string>
+    <string name="action_copy_link_title">Copy Title</string>
+    <string name="action_share_link_title">Share Title</string>
+    <string name="action_copy_geo_url">Copy geo URI</string>
+    <string name="action_share_geo_url">Share geo URI</string>
+    <string name="action_open_url">Open URL</string>
+    <string name="action_open_url_with">Open URL With …</string>
+    <string name="action_share_url">Share URL</string>
+    <string name="action_open_map">Open Map</string>
+
+    <string name="dialog_open_with_title">Open with</string>
+    <string name="action_cancel">Cancel</string>
+
+    <string name="main_refresh_too_early">Manual update will be available after %1$s.</string>
+    <string name="main_autorenew_disabled">Auto-update is disabled.</string>
+    <string name="main_autorenew_in_progress">Auto-update is in progress.</string>
+    <string name="main_initial_load_in_progress">Initial load is in progress.</string>
+    <string name="main_manual_update_in_progress">Manual update is in progress.</string>
+    <string name="main_autorenew_enabled_first">Auto-update is enabled.\n(Interval: %1$s | Next: %2$s)</string>
+    <string name="main_autorenew_enabled_with_last">Auto-update is enabled.\n(Interval: %1$s | Last: %2$s)</string>
+
+
+
+    <string name="settings_debug_simulate_error_msg">Simulated loading error</string>
+    <string name="error_debug_file_read">Could not read debug .dat file from URI</string>
+    <string name="error_debug_file_too_large">Debug file exceeds maximum size (10 MiB)</string>
+    <string name="error_file_write">Could not write file</string>
+    <string name="error_dat_url_not_found">Could not find .dat file URL in HTML</string>
+
+    <!-- Main Screen Strings -->
+    <string name="main_station_id">Station ID</string>
+    <string name="main_station_name">Station</string>
+    <string name="main_river_system">River System</string>
+    <string name="main_river_name">River</string>
+    <string name="main_latest_data">Latest Observation Data</string>
+    <string name="main_history_data">Observation Data History</string>
+    <string name="main_history_col_datetime">Date/Time</string>
+    <string name="main_history_col_rainfall">Rainfall\n(mm/10min)</string>
+    <string name="main_history_col_volume">Volume\n(×10³m³)</string>
+    <string name="main_history_col_inflow">Inflow\n(m³/s)</string>
+    <string name="main_history_col_outflow">Outflow\n(m³/s)</string>
+    <string name="main_history_col_storage">Storage Rate\n(%)</string>
+    <string name="main_history_load_all">Show all-period observation data</string>
+    <string name="title_observation_history_list">Observation Data List</string>
+    <string name="observation_history_empty">No observation data available.</string>
+    <string name="main_data_fetch_time">Read Time: %1$s</string>
+    <string name="main_data_update_time">Data Time: %1$s</string>
+    <string name="main_observation_data">Observation Station Info</string>
+    <string name="main_url_card_title">Links</string>
+    <string name="main_percentage_time">Data Time (Storage): %1$s</string>
+
+    <string name="main_rainfall">Catchment Rainfall (mm/10min)</string>
+    <string name="main_storage_volume">Storage Volume (×10³m³)</string>
+    <string name="main_inflow">Inflow (m³/s)</string>
+    <string name="main_outflow">Outflow (m³/s)</string>
+    <string name="main_storage_percentage">Storage Rate (%)</string>
+    <string name="main_storage_percentage_day_change">Storage Rate Daily Change (%)</string>
+    <string name="summary_storage_percentage_day_change">Day-over-day</string>
+    <string name="main_storage_percentage_week_change">Storage Rate Weekly Change (%)</string>
+
+    <!-- グラフカード用ラベル -->
+    <string name="graph_label_period">Period:</string>
+    <string name="graph_label_rainfall_total">Catchment Rainfall:</string>
+    <string name="graph_label_rainfall_max">Max Catchment Rainfall:</string>
+    <string name="graph_label_storage_rate_max">Max Storage Rate:</string>
+    <string name="graph_label_storage_rate_min">Min Storage Rate:</string>
+    <string name="graph_unit_storage_rate">(%)</string>
+    <string name="graph_unit_rainfall">(mm/10min)</string>
+    <string name="graph_tooltip_rainfall">Rainfall:</string>
+    <string name="graph_tooltip_storage_rate">Storage Rate:</string>
+    <string name="main_graph_observation_title">Observation Data (Graph)</string>
+    <string name="main_graph_rainfall_storage_select">Storage Rate / Catchment Rainfall</string>
+    <string name="main_graph_volume_flow_select">Storage Volume / Inflow / Outflow</string>
+    <string name="main_graph_rainfall_storage_history_select">Storage Rate (Year Comparison) / Catchment Rainfall</string>
+    <string name="main_graph_volume_flow_history_select">Storage Volume (Year Comparison) / Inflow / Outflow</string>
+    <string name="graph_historical_comparison_loading">Loading historical data…</string>
+    <string name="graph_historical_comparison_error">The historical data could not be loaded.</string>
+    <string name="graph_historical_comparison_retry">Retry</string>
+    <string name="graph_line_chip_all_storage_rate">All Storage Rate</string>
+    <string name="graph_line_chip_all_storage_volume">All Storage Volume</string>
+    <string name="graph_line_chip_storage_rate">Storage Rate</string>
+    <string name="graph_line_chip_rainfall">Catchment Rainfall</string>
+    <string name="graph_line_chip_storage_volume">Storage Volume</string>
+    <string name="graph_line_chip_inflow">Inflow</string>
+    <string name="graph_line_chip_outflow">Outflow</string>
+    <string name="graph_label_storage_volume_max">Max Storage Volume:</string>
+    <string name="graph_label_storage_volume_min">Min Storage Volume:</string>
+    <string name="graph_label_inflow_max">Max Inflow:</string>
+    <string name="graph_label_inflow_min">Min Inflow:</string>
+    <string name="graph_label_outflow_max">Max Outflow:</string>
+    <string name="graph_label_outflow_min">Min Outflow:</string>
+    <string name="graph_unit_storage_volume">(×10³m³)</string>
+    <string name="graph_unit_flow">(m³/s)</string>
+    <string name="graph_tooltip_storage_volume">Storage Volume:</string>
+    <string name="graph_tooltip_inflow">Inflow:</string>
+    <string name="graph_tooltip_outflow">Outflow:</string>
+    <string name="graph_range_past_72_hours">Past 72 hours</string>
+    <string name="graph_range_past_48_hours">Past 48 hours</string>
+    <string name="graph_range_past_24_hours">Past 24 hours</string>
+    <string name="graph_range_full_range">Full period</string>
+
+
+
+
+    <!-- NavigationDrawer/Permanent ナビゲーション -->
+    <string name="nav_auto_update">Auto Update</string>
+    <string name="nav_source">Source</string>
+    <string name="nav_debug">Debug</string>
+    <string name="nav_settings">Settings</string>
+    <string name="nav_app_info">About</string>
+    <string name="nav_source_db">MLIT Water Information System</string>
+    <string name="nav_source_pdl">PDL1.0</string>
+    <string name="nav_source_credit">Derived from MLIT Water Information System (retrieved %1$s)</string>
+    <!-- 貯水率メッセージ デフォルト値（非翻訳）- リセット用 -->
+    <string name="storage_default_msg_ja_80_100" translatable="false">うどん茹で放題〜</string>
+    <string name="storage_default_msg_ja_60_80" translatable="false">旧大川村役場は水の底〜</string>
+    <string name="storage_default_msg_ja_40_60" translatable="false">旧大川村役場の屋上が…</string>
+    <string name="storage_default_msg_ja_20_40" translatable="false">旧大川村役場の建屋が…</string>
+    <string name="storage_default_msg_ja_0_20" translatable="false">雨乞いせねば🌧⛩️🙏🌧…</string>
+    <string name="storage_default_msg_ja_0" translatable="false">水が無ければ█で茹でれば…</string>
+    <string name="storage_default_msg_non_ja_80_100" translatable="false">💧💧💧💧💧</string>
+    <string name="storage_default_msg_non_ja_60_80" translatable="false">💧💧💧💧🩸</string>
+    <string name="storage_default_msg_non_ja_40_60" translatable="false">💧💧💧🩸🩸</string>
+    <string name="storage_default_msg_non_ja_20_40" translatable="false">💧💧🩸🩸🩸</string>
+    <string name="storage_default_msg_non_ja_0_20" translatable="false">💧🩸🩸🩸🩸</string>
+    <string name="storage_default_msg_non_ja_0" translatable="false">🩸🩸🩸🩸🩸</string>
+
+    <string name="main_emoji_80_100" translatable="false">😊</string>
+    <string name="main_emoji_60_80" translatable="false">😌</string>
+    <string name="main_emoji_40_60" translatable="false">😨</string>
+    <string name="main_emoji_20_40" translatable="false">😰</string>
+    <string name="main_emoji_0_20" translatable="false">😱</string>
+    <string name="main_emoji_0" translatable="false">😇</string>
+    <string name="main_emoji_all_abnormal" translatable="false">😑</string>
+    <string name="main_emoji_initial_message" translatable="false">🥺</string>
+    <string name="main_emoji_network_unavailable" translatable="false">😢</string>
+    <string name="main_emoji_loading_error" translatable="false">😵</string>
+    <string name="main_emoji_all_data_invalid" translatable="false">😴</string>
+    <string name="main_emoji_data_distribution_stopped" translatable="false">😪</string>
+    <string name="main_emoji_data_distribution_resumed" translatable="false">🥱</string>
+
+    <!-- 貯水率メッセージ(日本語以外) -->
+
+    <string name="settings_header_system">System</string>
+    <string name="settings_header_general">General</string>
+    <string name="settings_header_data_source">Data Source</string>
+    <string name="settings_header_debug">Debug</string>
+
+    <string name="settings_data_source_realtime">Real-time data</string>
+    <string name="settings_data_source_realtime_sudmonitor">sudmonitor.kusugami-lab.net</string>
+    <string name="settings_data_source_realtime_mlit">MLIT Water Information System</string>
+    <string name="settings_data_source_realtime_help_sudmonitor">Real-time data is retrieved from cache server %1$s</string>
+    <string name="settings_data_source_realtime_help_mlit">Real-time data is retrieved directly from the MLIT Water Information System</string>
+    <string name="settings_data_source_historical">Historical data</string>
+    <string name="settings_data_source_historical_mlit">MLIT Water Information System</string>
+    <string name="settings_data_source_historical_help_sudmonitor">Historical data is first searched in the app bundle, or retrieved from cache server %1$s. If no historical data exists in these data sources, or if the data source is unavailable due to a Cloudflare outage or other reasons, historical data is searched from the MLIT Water Information System</string>
+    <string name="settings_data_source_historical_help_mlit">Historical data is searched from the MLIT Water Information System</string>
+    <string name="settings_data_source_dam_locked">Fixed to the dam fetched by sudmonitor</string>
+    <string name="settings_data_source_switch_confirm_title">Switch Real-time Data Source</string>
+    <string name="settings_data_source_switch_confirm">Switching real-time data to sudmonitor.kusugami-lab.net fixes the dam to Sameura Dam.</string>
+
+    <string name="debug_settings_enabled">Debug enabled</string>
+
+    <string name="settings_system_theme">Theme</string>
+    <string name="settings_system_language">Language</string>
+    <string name="settings_system_language_system_default">System Default (%1$s)</string>
+
+    <string name="dialog_set_title_storage">%1$s</string>
+    <string name="dialog_set_title_other">%1$s</string>
+    <string name="dialog_message_ja_label">Message (Japanese)</string>
+    <string name="dialog_message_non_ja_label">Message (Non-Japanese)</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <string name="settings_general_auto_update">Auto Update</string>
+    <string name="settings_general_auto_update_desc">Automatically fetch observation data in background.</string>
+    <string name="settings_general_update_on_boot">Update on Boot</string>
+    <string name="settings_general_update_on_boot_desc">Automatically fetch observation data when the device starts.</string>
+    <string name="settings_general_show_notification">Show Notification</string>
+    <string name="settings_general_show_notification_desc">Show notification.</string>
+    <string name="settings_notification_permission_denied">Notification permission was denied. You can enable it in system settings.</string>
+    <string name="settings_general_auto_update_interval">Auto Update Interval</string>
+    <string name="settings_general_auto_update_interval_one_week">1 Week (Every 7 days)</string>
+    <string name="settings_general_auto_update_interval_one_day">1 Day</string>
+    <string name="settings_general_auto_update_interval_12_hours">12 Hours</string>
+    <string name="settings_general_auto_update_interval_one_hour">1 Hour</string>
+    <string name="settings_general_auto_update_daily_history_note">The daily historical data auto-update interval is 1 day</string>
+    <string name="settings_general_auto_update_last">Auto Update: Last (Actual)</string>
+
+    <string name="settings_general_auto_update_next_timing">Auto Update: Next</string>
+    <string name="settings_general_auto_update_next_hint">Set next auto-update timing.</string>
+    <string name="settings_general_auto_update_rescheduled_warning">(Auto-update interval may vary due to network conditions, Android battery saver, or device manufacturer\'s power saving features.)</string>
+
+    <string name="settings_general_messages_sameura">Storage Percentage Messages</string>
+
+    <string name="settings_show_storage_message">Show Storage Percentage Messages</string>
+    <string name="settings_show_storage_message_desc">Display messages based on the observation data storage rate.</string>
+    <string name="settings_storage_messages_sameura_title">Storage Percentage Messages (Sameura Dam)</string>
+    <string name="settings_storage_messages_other_title">Storage Percentage Messages (Other Dams)</string>
+    <string name="settings_storage_rate_label_80_100" tools:ignore="TypographyDashes">Storage rate 80-100%</string>
+    <string name="settings_storage_rate_label_60_80">Volume ≥ 80,000×10³m³</string>
+    <string name="settings_storage_rate_label_40_60">Volume ≥ 60,000×10³m³ and &lt; 80,000×10³m³</string>
+    <string name="settings_storage_rate_label_20_40">Volume ≥ 40,000×10³m³ and &lt; 60,000×10³m³</string>
+    <string name="settings_storage_rate_label_0_20">Volume &lt; 40,000×10³m³</string>
+    <string name="settings_storage_rate_label_0">Storage rate 0%</string>
+    <string name="settings_loading_error_message">Observation Data Fetch Failure</string>
+    <string name="settings_initial_message">Initial Message</string>
+
+    <string name="settings_network_unavailable_message">No Network Connection</string>
+    <string name="settings_data_distribution_stopped_message">Observation Data Distribution Stopped</string>
+    <string name="settings_data_distribution_resumed_message">Observation Data Distribution Resumed</string>
+    <string name="settings_storage_no_data">Storage Percentage Data Distribution Suspended</string>
+    <string name="settings_all_data_invalid_message">Observation Data Distribution Suspended</string>
+    <!-- その他/特殊メッセージ デフォルト値（非翻訳）- リセット用 -->
+    <string name="storage_default_msg_ja_all_abnormal" translatable="false">貯水率データ配信停止中</string>
+    <string name="storage_default_msg_non_ja_all_abnormal" translatable="false">Storage percentage data distribution is suspended</string>
+    <string name="storage_default_msg_ja_all_data_invalid" translatable="false">全観測データ配信停止中</string>
+    <string name="storage_default_msg_non_ja_all_data_invalid" translatable="false">Observation data distribution is suspended</string>
+    <string name="storage_default_msg_ja_initial_message" translatable="false">アプリを起動してください</string>
+    <string name="storage_default_msg_non_ja_initial_message" translatable="false">Please launch the app</string>
+    <string name="storage_default_msg_ja_network_unavailable" translatable="false">ネットワーク接続がありません</string>
+    <string name="storage_default_msg_non_ja_network_unavailable" translatable="false">No network connection</string>
+    <string name="storage_default_msg_ja_loading_error" translatable="false">観測データの取得に失敗しました</string>
+    <string name="storage_default_msg_non_ja_loading_error" translatable="false">Failed to fetch observation data</string>
+    <string name="storage_default_msg_ja_data_distribution_stopped" translatable="false">観測データの配信が停止しました</string>
+    <string name="storage_default_msg_non_ja_data_distribution_stopped" translatable="false">Observation data distribution has stopped</string>
+    <string name="storage_default_msg_ja_data_distribution_resumed" translatable="false">観測データの配信が復帰しました</string>
+    <string name="storage_default_msg_non_ja_data_distribution_resumed" translatable="false">Observation data distribution has resumed</string>
+    <string name="settings_header_other_messages">Other Messages</string>
+    <string name="settings_reset_all_messages">Reset all storage percentage messages</string>
+    <string name="settings_reset_all_other_messages">Reset all messages</string>
+    <string name="settings_reset_option_delete">Delete Messages</string>
+    <string name="settings_reset_option_sameura">Set Messages for Udon Prefecture Residents</string>
+    <string name="settings_reset_option_non_ja">Set Messages for General Users</string>
+    <string name="settings_reset_storage_messages_confirm_title">Storage Percentage Messages</string>
+    <string name="settings_reset_storage_messages_confirm_message">Reset all storage percentage messages? This action cannot be undone.</string>
+    <string name="settings_reset_other_messages_confirm_title">Other Messages</string>
+    <string name="settings_reset_other_messages_confirm_message">Reset all other messages? This action cannot be undone.</string>
+
+    <string name="settings_not_set">Not set</string>
+
+    <string name="settings_dam_dam_name">Dam</string>
+    <string name="settings_dam_url_data">Display Dam Data, MLIT (国土交通省 リアルタイムダム諸量一覧表)</string>
+    <string name="settings_dam_url_disaster">Disaster Information for River, MLIT (国土交通省 川の防災情報)</string>
+    <string name="settings_dam_url_site_info">Site Information, MLIT (国土交通省 水文水質観測所情報)</string>
+    <string name="settings_dam_url_search">Search Dam Data, MLIT (国土交通省 任意期間ダム諸量検索)</string>
+
+    <string name="settings_dam_geo">Location (geo URI)</string>
+
+    <string name="settings_debug_mode">Debug Mode</string>
+    <string name="settings_debug_mode_desc">Enable debug mode for local testing.</string>
+    <string name="settings_debug_dat_file_realtime_title">Debug .dat file (realtime data)</string>
+    <string name="settings_debug_dat_file_historical_daily_title">Debug .dat file (daily historical data)</string>
+    <string name="settings_debug_dat_file_builtin">Use bundled data file</string>
+    <string name="settings_debug_dat_file_latest_realtime">Use latest realtime data</string>
+    <string name="settings_debug_dat_file_latest_historical_daily">Use latest daily historical data</string>
+    <string name="settings_debug_dat_file_select_realtime">Use selected realtime data</string>
+    <string name="settings_debug_dat_file_select_historical_daily">Use selected historical data</string>
+
+    <string name="settings_debug_default_used">Use bundled data file</string>
+
+    <string name="settings_debug_data_period">Debug Mode Data Period (realtime data)</string>
+    <string name="settings_debug_data_period_all">All</string>
+    <string name="settings_debug_data_period_custom">Specify period</string>
+    <string name="settings_debug_data_period_start_time">Start Time</string>
+    <string name="settings_debug_data_period_end_date">End Date</string>
+    <string name="settings_debug_data_period_end_time">End Time</string>
+    <string name="settings_debug_data_period_note">Data period: %1$s - %2$s</string>
+    <string name="settings_debug_data_period_set_button">Set</string>
+    <string name="settings_debug_data_period_auto_advance">Advance the data period (realtime data) after each refresh</string>
+    <string name="settings_debug_data_period_auto_advance_desc">Advance the realtime debug data period to the next data row after each observation data fetch.</string>
+
+
+
+    <string name="settings_debug_export_realtime_dat_file">Export .dat file (realtime data)</string>
+    <string name="settings_debug_export_realtime_dat_file_desc">Export the currently held realtime data file.</string>
+    <string name="settings_debug_export_historical_daily_dat_file">Export .dat file (daily historical data)</string>
+    <string name="settings_debug_export_historical_daily_dat_file_desc">Export the currently held historical data (daily) file.</string>
+    <string name="settings_debug_export_encoding_original">Original Encoding</string>
+    <string name="settings_debug_export_encoding_utf8">UTF-8 Encoding (with BOM)</string>
+    <string name="settings_debug_export_no_data">No data available to export.</string>
+    <string name="settings_debug_simulate_mode">Simulate No Network Connection / Observation Data Fetch Failure</string>
+    <string name="settings_debug_simulate_mode_none">No simulation</string>
+    <string name="settings_debug_simulate_mode_network_unavailable">Simulate no network connection</string>
+    <string name="settings_debug_simulate_mode_loading_failure">Simulate dam data fetch failure</string>
+    <string name="settings_disable_debug">Disable Debug</string>
+    <string name="dialog_state_label">State (Max 1 char)</string>
+
+    <string name="dialog_save">Save</string>
+    <string name="dialog_reset">Reset</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dam_selection_title">Select Dam</string>
+    <string name="dam_selection_select_action">Select</string>
+
+    <string name="dialog_error_one_char_only">Only 1 character is allowed.</string>
+
+
+
+
+
+    <string name="dialog_auto_update_timing_title">Auto Update: Next</string>
+    <string name="dialog_auto_update_timing_date">Date</string>
+    <string name="dialog_auto_update_timing_time">Time</string>
+    <string name="dialog_auto_update_timing_error">Set a time in the future.</string>
+    <string name="dialog_auto_update_timing_error_min_advance">Set a time at least 15 minutes from now.</string>
+    <string name="dialog_initial_auto_update_title">Enable Auto Update?</string>
+    <string name="dialog_initial_auto_update_message">By default, observation data is automatically fetched once a week (early Monday morning). The auto-update interval and timing can be changed in settings.</string>
+    <string name="action_yes">Yes</string>
+    <string name="action_no">No</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">Sameura Dam Monitor</string>
+    <string name="boot_notification_open_app">Please open the app to show storage percentage</string>
+
+    <!-- デバッグログ -->
+    <string name="settings_database_vacuum">Free Database Space</string>
+    <string name="settings_database_vacuum_desc">Free unused space in the app bundled database.</string>
+    <string name="settings_database_vacuum_done">Freed unused space in the app bundled database. Before: %1$s, after: %2$s.</string>
+    <string name="settings_database_vacuum_failed">Failed to free unused database space.</string>
+    <string name="settings_database_size_bytes">%1$d B</string>
+    <string name="settings_debug_log">Debug Log</string>
+    <string name="settings_debug_log_desc">View debug log.</string>
+    <string name="title_activity_debug">Debug</string>
+    <string name="title_activity_debug_log">Debug Log</string>
+    <string name="debug_log_empty">No log entries.</string>
+
+    <string name="debug_log_menu_save">Save</string>
+    <string name="debug_log_menu_share">Share</string>
+    <string name="debug_log_menu_delete_all">Delete All</string>
+    <string name="debug_log_delete_confirm_title">Delete Debug Log</string>
+    <string name="debug_log_delete_confirm_message">Are you sure you want to delete all debug log entries?</string>
+    <string name="debug_log_share_subject">Debug Log (Sameura Dam Monitor)</string>
+
+    <!-- 過去データ検索 -->
+    <string name="nav_realtime_data">Realtime Data</string>
+    <string name="nav_historical_data">Historical Data</string>
+    <string name="nav_historical_search">Search Historical Data</string>
+    <string name="nav_daily_history_data">Past Data (Daily)</string>
+
+
+    <string name="historical_search_dialog_title">Historical Data Search</string>
+    <string name="historical_range_dialog_title">Historical Data Display Range</string>
+    <string name="historical_search_dam_label">Dam</string>
+    <string name="historical_search_start_date">Start Date</string>
+    <string name="historical_search_end_date">End Date</string>
+    <string name="historical_search_date_not_selected">Select date</string>
+    <string name="historical_search_button">Search</string>
+    <string name="historical_range_display_button">Display</string>
+    <string name="historical_search_searching">Searching…</string>
+    <string name="historical_search_error_unknown">An unknown error occurred during historical data search.</string>
+
+    <string name="historical_search_error_date_range">Start date must be before or equal to end date.</string>
+
+    <string name="historical_search_error_date_range_too_long">Search period must be within 31 days.</string>
+    <string name="historical_search_error_too_old_date">Date must be June 1, 2002 or later.</string>
+    <string name="historical_range_error_out_of_bounds">Select dates within the original search period.</string>
+
+
+    <string name="graph_unit_rainfall_per_hour">(mm/h)</string>
+    <string name="main_history_col_rainfall_per_hour">Rainfall\n(mm/h)</string>
+
+
+    <string name="crosshair_enable_label">Show value on tap/drag</string>
+    <string name="nav_historical_manage">Manage Historical Data</string>
+    <string name="title_historical_manage">Manage Historical Data</string>
+    <string name="historical_manage_menu_show">Open</string>
+    <string name="historical_manage_menu_move_to_top">Move to Top</string>
+    <string name="historical_manage_menu_move_up">Move Up</string>
+    <string name="historical_manage_menu_move_down">Move Down</string>
+    <string name="historical_manage_menu_move_to_bottom">Move to Bottom</string>
+    <string name="historical_manage_menu_pin">Pin</string>
+    <string name="historical_manage_menu_unpin">Unpin</string>
+    <string name="historical_manage_menu_delete">Delete</string>
+    <string name="historical_manage_menu_delete_all">Delete All</string>
+    <string name="historical_manage_pin_limit_message">Up to 5 historical data items can be pinned.</string>
+    <string name="historical_manage_delete_confirm_title">Delete Historical Data</string>
+    <string name="historical_manage_delete_confirm_message">Are you sure you want to delete this historical data? This action cannot be undone.</string>
+    <string name="historical_manage_delete_all_confirm_title">Delete All Historical Data</string>
+    <string name="historical_manage_delete_all_confirm_message">Are you sure you want to delete all historical data? This action cannot be undone.</string>
+    <string name="historical_manage_empty">No historical data available.</string>
+    <string name="historical_search_max_count_snackbar">Up to %1$d historical data items can be saved.</string>
+    <string name="historical_search_error_today_date">End date cannot be today or later.</string>
+    <string name="historical_search_error_network_unavailable">Network is unavailable. Please check your connection and try again.</string>
+    <string name="historical_search_error_no_data">No observation data exists within the specified period.</string>
+    <string name="historical_search_error_dam_not_supported">This dam does not support historical data search.</string>
+    <string name="historical_search_error_duplicate">Historical data for the same dam and period already exists.</string>
+    <string name="historical_search_error_sudmonitor_daily_loaded">This period is already loaded as sudmonitor daily historical data. Open it from the sidebar.</string>
+    <string name="historical_search_error_dat_url_not_found_html">.dat file URL was not found in the HTML.</string>
+    <string name="historical_search_error_parse_start_date">Failed to parse start date.</string>
+    <string name="historical_search_error_parse_end_date">Failed to parse end date.</string>
+    <string name="historical_search_error_local_file_not_found">No local .dat file covering the search period was found.</string>
+    <string name="historical_search_error_meta_fetch_failed">Failed to retrieve meta information.</string>
+    <string name="historical_search_max_count_dialog_title">Cannot Search Historical Data</string>
+    <plurals name="historical_search_error_max_count">
+        <item quantity="one">You can save up to %1$d historical data entry. Delete unnecessary historical data and try again.</item>
+        <item quantity="other">You can save up to %1$d historical data entries. Delete unnecessary historical data and try again.</item>
+    </plurals>
+    <string name="historical_search_duplicate">Historical data for the same dam and period already exists.</string>
+    <string name="historical_search_period_note">Data period: %1$s 01:00 ~ %2$s 00:00</string>
+
+    <string name="app_info_title">About</string>
+    <string name="app_info_version">Version</string>
+    <string name="app_info_terms_of_use">Terms of Use</string>
+    <string name="app_info_terms_of_use_ja">Terms of Use (Japanese original text)</string>
+    <string name="app_info_license">License</string>
+    <string name="app_info_license_subtitle">Apache License, Version 2.0</string>
+    <string name="app_info_privacy_policy">Privacy Policy</string>
+    <string name="app_info_privacy_policy_ja">Privacy Policy (Japanese original text)</string>
+    <string name="app_info_oss_license">OSS License</string>
+    <string name="app_info_codeberg">Repository (Codeberg)</string>
+    <string name="app_info_github">Repository (GitHub)</string>
+
+    <string name="dialog_version_format">Version %1$s (Build %2$d)</string>
+    <string name="dialog_terms_of_use_title">Terms of Use</string>
+    <string name="dialog_terms_of_use_ja_title">Terms of Use (Japanese original text)</string>
+    <string name="dialog_license_title">License</string>
+    <string name="dialog_privacy_policy_title">Privacy Policy</string>
+    <string name="dialog_privacy_policy_ja_title">Privacy Policy (Japanese original text)</string>
+    <string name="dialog_oss_license_title">OSS License</string>
+    <string name="url_error_cannot_open">Cannot open URL: %1$s</string>
+    <string name="url_error_unsupported_scheme">Unsupported URL scheme.</string>
+    <string name="desc_expand">Expand</string>
+    <string name="desc_collapse">Collapse</string>
+
+    <!-- Accessibility descriptions -->
+    <string name="desc_trend_up">Trend: Increasing</string>
+    <string name="desc_trend_down">Trend: Decreasing</string>
+    <string name="desc_trend_stable">Trend: Stable</string>
+    <string name="desc_currently_selected">Currently selected</string>
+    <string name="desc_current_dataset">Current dataset</string>
+    <string name="desc_select_theme">Select theme</string>
+    <string name="desc_edit_message">Edit message</string>
+    <string name="desc_select_dam">Select dam</string>
+    <string name="desc_select_date">Select date</string>
+    <string name="desc_select_time">Select time</string>
+    <string name="desc_select_option">Select option</string>
+    <string name="desc_open_link_menu">Open link menu for %1$s</string>
+    <string name="desc_auto_update_enabled">Auto-update enabled</string>
+    <string name="desc_auto_update_disabled">Auto-update disabled</string>
+    <string name="desc_update_complete">Update complete</string>
+    <string name="desc_navigation_pane">Navigation</string>
+    <string name="desc_main_content_pane">Main content</string>
+    <plurals name="desc_graph_summary_data_points">
+        <item quantity="one">%1$d data point</item>
+        <item quantity="other">%1$d data points</item>
+    </plurals>
+    <string name="desc_graph_summary_detailed">%1$s, %2$s from %3$s to %4$s. Current: %5$s. Minimum: %6$s. Maximum: %7$s. Trend: %8$s.</string>
+    <string name="desc_graph_previous_point">Previous data point</string>
+    <string name="desc_graph_next_point">Next data point</string>
+</resources>
