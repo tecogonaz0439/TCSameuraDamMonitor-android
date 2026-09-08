@@ -150,7 +150,7 @@ fun ObservationGraphCard(
     historicalSearchEndMillis: Long? = null,
     damId: String? = null,
     comparisonStates: Map<HistoricalComparisonMetric, HistoricalComparisonMetricState> = emptyMap(),
-    onHistoricalMetricSelected: ((HistoricalComparisonMetric, Long, Long, Int?) -> Unit)? = null
+    onHistoricalMetricSelected: ((HistoricalComparisonMetric, Long, Long, Int?, Boolean) -> Unit)? = null
 ) {
     if (historicalData.isEmpty()) return
 
@@ -209,6 +209,9 @@ fun ObservationGraphCard(
             null
         }
     }
+    // リアルタイム表示の比較ウィンドウかどうか。trueの場合、リアルタイム自動更新で今年の系列が
+    // 窓終端を超えて延びたときにViewModelが窓終端を拡張して比較データを再読込する。
+    val isRealtimeComparisonWindow = !isHistorical && !isDailyHistory
     val historyMetric = displayType.historyMetric
     val comparisonData = if (displayType.isHistoricalComparison) {
         comparisonStates[historyMetric]?.data
@@ -334,7 +337,8 @@ fun ObservationGraphCard(
                                                 HistoricalComparisonMetric.STORAGE_RATE,
                                                 start,
                                                 end,
-                                                comparisonMainYear
+                                                comparisonMainYear,
+                                                isRealtimeComparisonWindow
                                             )
                                         }
                                     }
@@ -354,7 +358,8 @@ fun ObservationGraphCard(
                                                 HistoricalComparisonMetric.STORAGE_VOLUME,
                                                 start,
                                                 end,
-                                                comparisonMainYear
+                                                comparisonMainYear,
+                                                isRealtimeComparisonWindow
                                             )
                                         }
                                     }
@@ -474,7 +479,8 @@ fun ObservationGraphCard(
                                                     historyMetric,
                                                     start,
                                                     end,
-                                                    comparisonMainYear
+                                                    comparisonMainYear,
+                                                    isRealtimeComparisonWindow
                                                 )
                                             }
                                         }

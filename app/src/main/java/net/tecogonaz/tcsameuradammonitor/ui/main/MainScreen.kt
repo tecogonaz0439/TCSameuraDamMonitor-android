@@ -1850,8 +1850,14 @@ fun MainScreen(
                                     },
                                     damId = uiState.displayedDamConfig?.id,
                                     comparisonStates = uiState.historicalComparisonStates,
-                                    onHistoricalMetricSelected = { metric, startMillis, endMillis, mainYear ->
-                                        viewModel.ensureHistoricalComparison(metric, startMillis, endMillis, mainYear)
+                                    onHistoricalMetricSelected = { metric, startMillis, endMillis, mainYear, isRealtimeWindow ->
+                                        viewModel.ensureHistoricalComparison(
+                                            metric,
+                                            startMillis,
+                                            endMillis,
+                                            mainYear,
+                                            isRealtimeWindow
+                                        )
                                     }
                                 )
                             }

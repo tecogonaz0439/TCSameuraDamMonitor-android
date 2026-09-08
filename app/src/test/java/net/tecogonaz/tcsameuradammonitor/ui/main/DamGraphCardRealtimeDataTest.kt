@@ -366,6 +366,106 @@ class DamGraphCardRealtimeDataTest {
     }
 
     @Test
+    fun resolveComparisonXAxisRange_allRangeExtendsEndToRealtimeLatest() {
+        val result = resolveComparisonXAxisRange(
+            isComparisonMode = true,
+            resolvedRange = null,
+            comparisonPeriod = 1_000L to 2_000L,
+            realtimeLatestMillis = 3_000L
+        )
+
+        assertEquals(1_000L to 3_000L, result)
+    }
+
+    @Test
+    fun resolveComparisonXAxisRange_allRangeKeepsComparisonEndWhenRealtimeLatestIsEarlier() {
+        val result = resolveComparisonXAxisRange(
+            isComparisonMode = true,
+            resolvedRange = null,
+            comparisonPeriod = 1_000L to 3_000L,
+            realtimeLatestMillis = 2_000L
+        )
+
+        assertEquals(1_000L to 3_000L, result)
+    }
+
+    @Test
+    fun resolveComparisonXAxisRange_allRangeFallsBackWhenRealtimeLatestIsNull() {
+        val result = resolveComparisonXAxisRange(
+            isComparisonMode = true,
+            resolvedRange = null,
+            comparisonPeriod = 1_000L to 2_000L,
+            realtimeLatestMillis = null
+        )
+
+        assertEquals(1_000L to 2_000L, result)
+    }
+
+    @Test
+    fun resolveComparisonXAxisRange_specifiedRangeIgnoresRealtimeLatest() {
+        val result = resolveComparisonXAxisRange(
+            isComparisonMode = true,
+            resolvedRange = 100L to 900L,
+            comparisonPeriod = 1_000L to 2_000L,
+            realtimeLatestMillis = 3_000L
+        )
+
+        assertEquals(100L to 900L, result)
+    }
+
+    @Test
+    fun buildRealtimeGraphDisplayData_allRangeExposesLatestMillis() {
+        val data = listOf(
+            historicalData("2026/05/18 05:00", 70f),
+            historicalData("2026/05/18 06:30", 71f)
+        )
+
+        val result = buildRealtimeGraphDisplayData(data, RealtimeGraphRange.ALL)
+
+        assertEquals(parseGraphTimeMillis("2026/05/18 06:30"), result.latestMillis)
+        assertEquals(null, result.windowStartMillis)
+        assertEquals(null, result.windowEndMillis)
+    }
+
+    @Test
+    fun buildRealtimeGraphDisplayData_past24HoursExposesLatestMillis() {
+        val data = listOf(
+            historicalData("2026/05/18 05:00", 70f),
+            historicalData("2026/05/18 06:30", 71f)
+        )
+
+        val result = buildRealtimeGraphDisplayData(data, RealtimeGraphRange.PAST_24_HOURS)
+
+        assertEquals(parseGraphTimeMillis("2026/05/18 06:30"), result.latestMillis)
+        assertEquals(parseGraphTimeMillis("2026/05/18 06:30"), result.windowEndMillis)
+    }
+
+    @Test
+    fun buildRealtimeStorageGraphDisplayData_allRangeExposesLatestMillis() {
+        val data = listOf(
+            historicalData("2026/05/18 05:00", 70f, catchmentAverageRainfall = 0f),
+            historicalData("2026/05/18 06:30", 71f, catchmentAverageRainfall = 0f)
+        )
+
+        val result = buildRealtimeStorageGraphDisplayData(data, RealtimeGraphRange.ALL)
+
+        assertEquals(parseGraphTimeMillis("2026/05/18 06:30"), result.latestMillis)
+    }
+
+    @Test
+    fun buildRealtimeStorageGraphDisplayData_past24HoursExposesLatestMillis() {
+        val data = listOf(
+            historicalData("2026/05/18 05:00", 70f),
+            historicalData("2026/05/18 06:30", 71f)
+        )
+
+        val result = buildRealtimeStorageGraphDisplayData(data, RealtimeGraphRange.PAST_24_HOURS)
+
+        assertEquals(parseGraphTimeMillis("2026/05/18 06:30"), result.latestMillis)
+        assertEquals(parseGraphTimeMillis("2026/05/18 06:30"), result.windowEndMillis)
+    }
+
+    @Test
     fun resolveComparisonRangeMillis_specifiedRangeShrinksToSelectedHoursFromDomainEnd() {
         val end = 1_000_000L
         val start = end - 7L * 24L * 3_600_000L

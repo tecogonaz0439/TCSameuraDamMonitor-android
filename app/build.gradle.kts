@@ -1,3 +1,5 @@
+import com.github.triplet.gradle.androidpublisher.ReleaseStatus
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -5,6 +7,7 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
     id("kotlin-parcelize")
+    alias(libs.plugins.play.publisher)
 }
 
 android {
@@ -15,7 +18,7 @@ android {
         applicationId = "net.tecogonaz.tcsameuradammonitor"
         minSdk = 34
         targetSdk = 37
-        versionCode = 1
+        versionCode = 3
         versionName = "1.0.0"
 
         testInstrumentationRunner = "net.tecogonaz.tcsameuradammonitor.HiltTestRunner"
@@ -91,6 +94,26 @@ android {
 ksp {
     arg("room.generateKotlin", "true")
     arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+// Play Console へのアップロード設定(Gradle Play Publisher)。
+// サービスアカウントJSONはGit管理対象外の keystore/ 配下に置く。
+// 既定は内部テスト(internal)トラック。-Ptrack=... / -PplayReleaseStatus=... で上書き可能。
+play {
+    serviceAccountCredentials.set(
+        rootProject.file(
+            System.getenv("TCSAMEURA_PLAY_SERVICE_ACCOUNT_JSON")
+                ?: findProperty("playServiceAccountJson")?.toString()
+                ?: "keystore/play-service-account.json"
+        )
+    )
+    defaultToAppBundles.set(true)
+    track.set(findProperty("track")?.toString() ?: "internal")
+    releaseStatus.set(
+        ReleaseStatus.valueOf(
+            (findProperty("playReleaseStatus")?.toString() ?: "completed").uppercase()
+        )
+    )
 }
 
 tasks.register("testDebugUnitTest") {

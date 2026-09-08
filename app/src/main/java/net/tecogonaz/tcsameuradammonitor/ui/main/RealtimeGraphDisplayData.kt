@@ -100,7 +100,9 @@ internal fun buildStorageGraphTooltipText(
 internal data class RealtimeGraphDisplayData(
     val data: List<DamHistoricalData>,
     val windowStartMillis: Long?,
-    val windowEndMillis: Long?
+    val windowEndMillis: Long?,
+    /** 表示データの最新観測時刻（エポックミリ秒）。時刻パース不能データのみの場合は null */
+    val latestMillis: Long? = null
 )
 
 internal fun resolveGraphXAxisRange(
@@ -128,20 +130,29 @@ internal fun resolveGraphXAxisRange(
  * 過去年の系列・Tooltip・X軸ラベルを他の期間選択と同じ経路で描画できます。
  * 期間指定（過去24/48/72時間）や通常modeでは [resolvedRange] をそのまま返します。
  *
+ * リアルタイム表示中に自動更新で今年の線が比較データの期間終端を超えて延びた場合は、
+ * 終端を [realtimeLatestMillis]（最新リアルタイム観測時刻）と比較データ期間終端の大きい方へ
+ * 拡張する。これにより期間ラベル・X軸・今年の線の描画エリアが自動更新に追従し、
+ * 今年の線がX軸の右側に飛び出すことを防ぐ。過去年の線は
+ * [buildComparisonEdgeExtendedPoints] がdomain内にクランプするため描画エリア外には出ない。
+ *
  * @param isComparisonMode 過去比較グラフ表示であるかどうか
  * @param resolvedRange 既存の [resolveGraphXAxisRange] の結果
  * @param comparisonPeriod 比較データの表示期間（開始・終了エポックミリ秒）
+ * @param realtimeLatestMillis リアルタイム表示データの最新観測時刻（エポックミリ秒）。null許可
  * @return 使用するX軸範囲。利用できない場合は null
  */
 internal fun resolveComparisonXAxisRange(
     isComparisonMode: Boolean,
     resolvedRange: Pair<Long, Long>?,
-    comparisonPeriod: Pair<Long, Long>?
+    comparisonPeriod: Pair<Long, Long>?,
+    realtimeLatestMillis: Long? = null
 ): Pair<Long, Long>? =
     if (isComparisonMode && resolvedRange == null && comparisonPeriod != null &&
         comparisonPeriod.first < comparisonPeriod.second
     ) {
-        comparisonPeriod
+        val endMillis = maxOf(comparisonPeriod.second, realtimeLatestMillis ?: comparisonPeriod.second)
+        comparisonPeriod.first to endMillis
     } else {
         resolvedRange
     }
@@ -182,17 +193,20 @@ internal fun buildRealtimeGraphDisplayData(
     historicalData: List<DamHistoricalData>,
     range: RealtimeGraphRange
 ): RealtimeGraphDisplayData {
-    val hours = range.hours ?: return RealtimeGraphDisplayData(historicalData, null, null)
+    val hours = range.hours
     val timedData = historicalData.mapNotNull { data ->
         parseGraphTimeMillis(data.time)?.let { timeMillis -> data to timeMillis }
     }.sortedBy { it.second }
     val latestMillis = timedData.maxOfOrNull { it.second }
-        ?: return RealtimeGraphDisplayData(historicalData, null, null)
+        ?: return RealtimeGraphDisplayData(historicalData, null, null, null)
+    if (hours == null) {
+        return RealtimeGraphDisplayData(historicalData, null, null, latestMillis)
+    }
     val startMillis = latestMillis - hours * MILLIS_PER_HOUR
     val inWindow = timedData
         .filter { (_, timeMillis) -> timeMillis >= startMillis && timeMillis <= latestMillis }
         .map { it.first }
-    return RealtimeGraphDisplayData(inWindow, startMillis, latestMillis)
+    return RealtimeGraphDisplayData(inWindow, startMillis, latestMillis, latestMillis)
 }
 
 internal fun realtimeGraphScaleValues(
@@ -299,7 +313,9 @@ internal fun comparisonLinesDrawnYears(
 internal data class RealtimeStorageGraphDisplayData(
     val data: List<DamHistoricalData>,
     val windowStartMillis: Long?,
-    val windowEndMillis: Long?
+    val windowEndMillis: Long?,
+    /** 表示データの最新観測時刻（エポックミリ秒）。時刻パース不能データのみの場合は null */
+    val latestMillis: Long? = null
 )
 
 internal fun buildRealtimeStorageGraphDisplayData(
@@ -311,11 +327,11 @@ internal fun buildRealtimeStorageGraphDisplayData(
         parseGraphTimeMillis(data.time)?.let { timeMillis -> data to timeMillis }
     }.sortedBy { it.second }
     val latestMillis = timedData.maxOfOrNull { it.second }
-        ?: return RealtimeStorageGraphDisplayData(historicalData, null, null)
+        ?: return RealtimeStorageGraphDisplayData(historicalData, null, null, null)
 
     if (hours == null) {
         val completedData = completeStoragePercentage(timedData)
-        return RealtimeStorageGraphDisplayData(completedData, null, null)
+        return RealtimeStorageGraphDisplayData(completedData, null, null, latestMillis)
     }
 
     val startMillis = latestMillis - hours * MILLIS_PER_HOUR
@@ -359,7 +375,8 @@ internal fun buildRealtimeStorageGraphDisplayData(
     return RealtimeStorageGraphDisplayData(
         data = result,
         windowStartMillis = startMillis,
-        windowEndMillis = latestMillis
+        windowEndMillis = latestMillis,
+        latestMillis = latestMillis
     )
 }
 

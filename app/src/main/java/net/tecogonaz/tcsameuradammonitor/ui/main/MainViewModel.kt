@@ -65,6 +65,8 @@ import java.util.TimeZone
 import javax.inject.Inject
 import kotlin.random.Random
 
+private const val MILLIS_PER_HOUR = 3600L * 1000L
+
 /**
  * メイン画面（MainScreen）のUI状態を表すデータクラスです。
  *
@@ -243,6 +245,9 @@ enum class HistoricalComparisonLoadState {
  * @property windowStartMillis 比較期間の開始エポックミリ秒（含む）。
  * @property windowEndMillis 比較期間の終了エポックミリ秒（含む）。
  * @property mainYear 読込要求時に指定された主系列年（日次データ更新時の再読込に使用する）。
+ * @property isRealtimeWindow リアルタイム表示の比較ウィンドウであるかどうか。
+ *   trueの場合、リアルタイム自動更新で今年の系列が窓終端を超えて延びたときに
+ *   窓終端を拡張して再読込する（[MainViewModel.refreshRealtimeHistoricalComparisons]）。
  */
 data class HistoricalComparisonMetricState(
     val loadState: HistoricalComparisonLoadState = HistoricalComparisonLoadState.IDLE,
@@ -251,6 +256,7 @@ data class HistoricalComparisonMetricState(
     val windowStartMillis: Long = 0L,
     val windowEndMillis: Long = 0L,
     val mainYear: Int? = null,
+    val isRealtimeWindow: Boolean = false,
 )
 
 private data class HistoricalDisplayState(
@@ -808,6 +814,12 @@ class MainViewModel @Inject constructor(
                     errorMessage = null
                 )
             }
+            data.historicalData
+                .mapNotNull { parseGraphTimeMillis(it.time) }
+                .maxOrNull()
+                ?.let { latestMillis ->
+                    refreshRealtimeHistoricalComparisons(latestMillis)
+                }
         }
     }
 
@@ -1348,7 +1360,8 @@ class MainViewModel @Inject constructor(
         metric: HistoricalComparisonMetric,
         windowStartMillis: Long,
         windowEndMillis: Long,
-        mainYear: Int? = null
+        mainYear: Int? = null,
+        isRealtimeWindow: Boolean = false
     ) {
         val config = _uiState.value.displayedDamConfig
         if (config == null || config.id != AppSettings.DEFAULT_DAM_ID) return
@@ -1357,7 +1370,8 @@ class MainViewModel @Inject constructor(
         if (currentState?.loadState == HistoricalComparisonLoadState.LOADING) return
         if (currentState?.loadState == HistoricalComparisonLoadState.READY &&
             currentState.windowStartMillis == windowStartMillis &&
-            currentState.windowEndMillis == windowEndMillis
+            currentState.windowEndMillis == windowEndMillis &&
+            currentState.isRealtimeWindow == isRealtimeWindow
         ) return
 
         comparisonJobs[metric]?.cancel()
@@ -1373,7 +1387,8 @@ class MainViewModel @Inject constructor(
                             loadState = HistoricalComparisonLoadState.LOADING,
                             windowStartMillis = windowStartMillis,
                             windowEndMillis = windowEndMillis,
-                            mainYear = mainYear
+                            mainYear = mainYear,
+                            isRealtimeWindow = isRealtimeWindow
                         )
                     )
                 )
@@ -1396,7 +1411,8 @@ class MainViewModel @Inject constructor(
                                     error = error,
                                     windowStartMillis = windowStartMillis,
                                     windowEndMillis = windowEndMillis,
-                                    mainYear = mainYear
+                                    mainYear = mainYear,
+                                    isRealtimeWindow = isRealtimeWindow
                                 )
                             )
                         )
@@ -1411,7 +1427,8 @@ class MainViewModel @Inject constructor(
                                     data = data,
                                     windowStartMillis = windowStartMillis,
                                     windowEndMillis = windowEndMillis,
-                                    mainYear = mainYear
+                                    mainYear = mainYear,
+                                    isRealtimeWindow = isRealtimeWindow
                                 )
                             )
                         )
@@ -1648,15 +1665,25 @@ class MainViewModel @Inject constructor(
      *
      * 比較グラフの主系列年（今年）系列は読込済み日次過去データとの合成のため、日次保存行の更新時に
      * 同じ期間・主系列年で読み直し、最新の日次データを反映します。ERROR は自動retryしません。
+     *
+     * リアルタイム表示の比較ウィンドウ（isRealtimeWindow=true）は、日次保存行の更新の間に
+     * リアルタイム自動更新で今年の系列が延びている可能性があるため、窓終端を現在のリアルタイム
+     * 最新観測時刻まで拡張して再読込する。窓開始・主系列年は保持する。
      */
     private fun refreshLoadedHistoricalComparisons() {
         val states = _uiState.value.historicalComparisonStates
         if (states.isEmpty()) return
+        val realtimeLatestMillis = realtimeDataLatestMillis()
         states.forEach { (metric, metricState) ->
             if (metricState.loadState != HistoricalComparisonLoadState.READY &&
                 metricState.loadState != HistoricalComparisonLoadState.LOADING
             ) {
                 return@forEach
+            }
+            val windowEndMillis = if (metricState.isRealtimeWindow && realtimeLatestMillis != null) {
+                maxOf(metricState.windowEndMillis, realtimeLatestMillis)
+            } else {
+                metricState.windowEndMillis
             }
             comparisonJobs[metric]?.cancel()
             _uiState.update { state ->
@@ -1673,11 +1700,60 @@ class MainViewModel @Inject constructor(
             ensureHistoricalComparison(
                 metric = metric,
                 windowStartMillis = metricState.windowStartMillis,
-                windowEndMillis = metricState.windowEndMillis,
-                mainYear = metricState.mainYear
+                windowEndMillis = windowEndMillis,
+                mainYear = metricState.mainYear,
+                isRealtimeWindow = metricState.isRealtimeWindow
             )
         }
     }
+
+    /**
+     * リアルタイム表示中の過去比較グラフを、今年の系列の進行に合わせて窓を拡張して再読込します。
+     *
+     * リアルタイム自動更新で今年の系列の最新観測時刻が読込済み比較ウィンドウの終端を1時間以上
+     * 超えたREADY状態のリアルタイム比較ウィンドウ（isRealtimeWindow=true）を、同じ窓開始・
+     * 主系列年で窓終端を [latestRealtimeMillis] に延長して再読込する。これにより「全期間」比較の
+     * 比較データ期間・X軸範囲・期間ラベルが自動更新に追従する。
+     * LOADING は読込完了待ち、ERROR は手動retry対象のため自動再読込しない。
+     * 日次過去データ・過去データ検索の比較（isRealtimeWindow=false）は対象外。
+     *
+     * @param latestRealtimeMillis リアルタイム表示データの最新観測時刻（エポックミリ秒）
+     */
+    private fun refreshRealtimeHistoricalComparisons(latestRealtimeMillis: Long) {
+        val states = _uiState.value.historicalComparisonStates
+        if (states.isEmpty()) return
+        states.forEach { (metric, metricState) ->
+            val isWindowExpired = metricState.loadState == HistoricalComparisonLoadState.READY &&
+                metricState.isRealtimeWindow &&
+                latestRealtimeMillis - metricState.windowEndMillis >= MILLIS_PER_HOUR
+            if (!isWindowExpired) return@forEach
+            comparisonJobs[metric]?.cancel()
+            _uiState.update { state ->
+                state.copy(
+                    historicalComparisonStates = state.historicalComparisonStates + (
+                        metric to metricState.copy(
+                            loadState = HistoricalComparisonLoadState.IDLE,
+                            data = null,
+                            error = null
+                        )
+                    )
+                )
+            }
+            ensureHistoricalComparison(
+                metric = metric,
+                windowStartMillis = metricState.windowStartMillis,
+                windowEndMillis = latestRealtimeMillis,
+                mainYear = metricState.mainYear,
+                isRealtimeWindow = true
+            )
+        }
+    }
+
+    /** 現在のリアルタイム表示データ（[MainUiState.damData]）の最新観測時刻を返します。 */
+    private fun realtimeDataLatestMillis(): Long? =
+        _uiState.value.damData?.historicalData
+            ?.mapNotNull { parseGraphTimeMillis(it.time) }
+            ?.maxOrNull()
 
     /**
      * 過去データ(日次)表示に期間絞り込みを適用します。

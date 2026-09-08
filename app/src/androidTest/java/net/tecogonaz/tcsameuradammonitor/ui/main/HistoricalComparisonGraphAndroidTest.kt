@@ -244,7 +244,7 @@ class HistoricalComparisonGraphAndroidTest {
                     loadState = HistoricalComparisonLoadState.ERROR
                 )
             ),
-            onHistoricalMetricSelected = { metric, _, _, _ -> recordedMetric = metric }
+            onHistoricalMetricSelected = { metric, _, _, _, _ -> recordedMetric = metric }
         )
         clickModeChip(context.getString(R.string.main_graph_rainfall_storage_history_select))
         composeRule.runOnIdle { recordedMetric = null }
@@ -871,7 +871,7 @@ class HistoricalComparisonGraphAndroidTest {
         isHistorical: Boolean = false,
         comparisonStates: Map<HistoricalComparisonMetric, HistoricalComparisonMetricState> =
             emptyMap(),
-        onHistoricalMetricSelected: ((HistoricalComparisonMetric, Long, Long, Int?) -> Unit)? = null,
+        onHistoricalMetricSelected: ((HistoricalComparisonMetric, Long, Long, Int?, Boolean) -> Unit)? = null,
         cardWidth: Dp = 390.dp
     ) {
         composeRule.setContent {

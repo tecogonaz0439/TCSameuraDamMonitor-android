@@ -520,11 +520,12 @@ internal fun DamGraphCard(
             realtimeStartMillis = realtimeStorageDisplay?.windowStartMillis,
             realtimeEndMillis = realtimeStorageDisplay?.windowEndMillis
         ),
-        comparisonPeriod = comparisonData?.let { it.periodStartMillis to it.periodEndMillis }
+        comparisonPeriod = comparisonData?.let { it.periodStartMillis to it.periodEndMillis },
+        realtimeLatestMillis = realtimeStorageDisplay?.latestMillis
     )
-    
+
     val useTimeBasedX = xAxisRangeMillis != null
-    
+
     val pointMillisList: List<Long> = remember(points, useTimeBasedX) {
         if (!useTimeBasedX) return@remember emptyList()
         points.map { (timeStr, _) ->
@@ -1584,7 +1585,8 @@ internal fun DamVolumeFlowGraphCard(
             realtimeStartMillis = realtimeDisplay?.windowStartMillis,
             realtimeEndMillis = realtimeDisplay?.windowEndMillis
         ),
-        comparisonPeriod = comparisonData?.let { it.periodStartMillis to it.periodEndMillis }
+        comparisonPeriod = comparisonData?.let { it.periodStartMillis to it.periodEndMillis },
+        realtimeLatestMillis = realtimeDisplay?.latestMillis
     )
     
     val useTimeBasedX = xAxisRangeMillis != null

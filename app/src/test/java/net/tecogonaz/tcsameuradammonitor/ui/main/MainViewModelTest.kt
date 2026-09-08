@@ -1765,6 +1765,107 @@ class MainViewModelTest {
         }
 
     @Test
+    fun refreshRealtimeHistoricalComparisons_extendsRealtimeWindowWhenLatestAdvancesByHourOrMore() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            val fixture = createViewModel(settings = stableSettings(), initialData = damData())
+            advanceUntilIdle()
+
+            fixture.viewModel.ensureHistoricalComparison(
+                HistoricalComparisonMetric.STORAGE_RATE,
+                windowStartMillis = jstMillis("2026/05/18 00:00"),
+                windowEndMillis = jstMillis("2026/05/18 05:00"),
+                isRealtimeWindow = true
+            )
+            advanceUntilIdle()
+            assertEquals(1, fixture.comparisonRepository.loadCount)
+
+            fixture.damRepository.emitData(
+                damData(updatedAt = "2026/05/18 06:30").copy(
+                    historicalData = historicalDataSeries("2026/05/18 05:15", "2026/05/18 06:30")
+                )
+            )
+            advanceUntilIdle()
+
+            assertEquals(2, fixture.comparisonRepository.loadCount)
+            assertEquals(
+                jstMillis("2026/05/18 00:00"),
+                fixture.comparisonRepository.lastWindowStartMillis
+            )
+            assertEquals(
+                jstMillis("2026/05/18 06:30"),
+                fixture.comparisonRepository.lastWindowEndMillis
+            )
+            val state = fixture.viewModel.uiState.value.historicalComparisonStates[
+                HistoricalComparisonMetric.STORAGE_RATE
+            ]
+            assertEquals(HistoricalComparisonLoadState.READY, state?.loadState)
+            assertEquals(jstMillis("2026/05/18 00:00"), state?.windowStartMillis)
+            assertEquals(jstMillis("2026/05/18 06:30"), state?.windowEndMillis)
+            assertEquals(true, state?.isRealtimeWindow)
+        }
+
+    @Test
+    fun refreshRealtimeHistoricalComparisons_doesNotReloadWhenLatestAdvancesLessThanHour() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            val fixture = createViewModel(settings = stableSettings(), initialData = damData())
+            advanceUntilIdle()
+
+            fixture.viewModel.ensureHistoricalComparison(
+                HistoricalComparisonMetric.STORAGE_RATE,
+                windowStartMillis = jstMillis("2026/05/18 00:00"),
+                windowEndMillis = jstMillis("2026/05/18 05:00"),
+                isRealtimeWindow = true
+            )
+            advanceUntilIdle()
+            assertEquals(1, fixture.comparisonRepository.loadCount)
+
+            fixture.damRepository.emitData(
+                damData(updatedAt = "2026/05/18 05:40").copy(
+                    historicalData = historicalDataSeries("2026/05/18 05:15", "2026/05/18 05:40")
+                )
+            )
+            advanceUntilIdle()
+
+            assertEquals(1, fixture.comparisonRepository.loadCount)
+            assertEquals(
+                jstMillis("2026/05/18 05:00"),
+                fixture.viewModel.uiState.value.historicalComparisonStates[
+                    HistoricalComparisonMetric.STORAGE_RATE
+                ]?.windowEndMillis
+            )
+        }
+
+    @Test
+    fun refreshRealtimeHistoricalComparisons_ignoresNonRealtimeWindow() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            val fixture = createViewModel(settings = stableSettings(), initialData = damData())
+            advanceUntilIdle()
+
+            fixture.viewModel.ensureHistoricalComparison(
+                HistoricalComparisonMetric.STORAGE_RATE,
+                windowStartMillis = jstMillis("2026/05/18 00:00"),
+                windowEndMillis = jstMillis("2026/05/18 05:00")
+            )
+            advanceUntilIdle()
+            assertEquals(1, fixture.comparisonRepository.loadCount)
+
+            fixture.damRepository.emitData(
+                damData(updatedAt = "2026/05/18 06:30").copy(
+                    historicalData = historicalDataSeries("2026/05/18 05:15", "2026/05/18 06:30")
+                )
+            )
+            advanceUntilIdle()
+
+            assertEquals(1, fixture.comparisonRepository.loadCount)
+            assertEquals(
+                jstMillis("2026/05/18 05:00"),
+                fixture.viewModel.uiState.value.historicalComparisonStates[
+                    HistoricalComparisonMetric.STORAGE_RATE
+                ]?.windowEndMillis
+            )
+        }
+
+    @Test
     fun toggleMainCardExpansion_togglesOnlyRequestedModeSpecificCard() =
         runTest(mainDispatcherRule.testDispatcher) {
             val fixture = createViewModel(settings = stableSettings(), initialData = null)
