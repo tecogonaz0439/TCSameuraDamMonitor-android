@@ -18,8 +18,8 @@ android {
         applicationId = "net.tecogonaz.tcsameuradammonitor"
         minSdk = 34
         targetSdk = 37
-        versionCode = 3
-        versionName = "1.0.0"
+        versionCode = 4
+        versionName = "1.0.0-beta.3"
 
         testInstrumentationRunner = "net.tecogonaz.tcsameuradammonitor.HiltTestRunner"
     }
@@ -49,10 +49,15 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            val uploadStoreFile = signingConfigs.getByName("release").storeFile
-            val uploadStorePassword = signingConfigs.getByName("release").storePassword
-            if (uploadStoreFile != null && uploadStoreFile.exists() && !uploadStorePassword.isNullOrBlank()) {
-                signingConfig = signingConfigs.getByName("release")
+            vcsInfo {
+                include = false
+            }
+            if ("release" in signingConfigs.names) {
+                val uploadStoreFile = signingConfigs.getByName("release").storeFile
+                val uploadStorePassword = signingConfigs.getByName("release").storePassword
+                if (uploadStoreFile != null && uploadStoreFile.exists() && !uploadStorePassword.isNullOrBlank()) {
+                    signingConfig = signingConfigs.getByName("release")
+                }
             }
         }
     }

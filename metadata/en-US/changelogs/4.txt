@@ -1,0 +1,8 @@
+First F-Droid release.
+
+* Real-time data — fetches and stores real-time data, showing storage rate, storage volume, inflow, discharge and basin-average rainfall
+* Storage rate messages — displays status and messages based on the storage rate, customizable
+* Historical data — fetches and stores past data for any period, with offline search (Sameura Dam only)
+* Interactive graphs — graphs for real-time and historical data (rainfall/storage rate, storage volume/inflow/discharge)
+* Home screen widget — check the real-time storage rate and message at a glance
+* Auto update and notifications — background real-time data fetching and storage change notifications
