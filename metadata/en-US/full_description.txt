@@ -8,4 +8,6 @@ Features:
 * Home screen widget — check the real-time storage rate and message at a glance
 * Auto update and notifications — background real-time data fetching and storage change notifications
 
-This app only uses official MLIT data sources (directly or via a cache server) and contains no ads, trackers or analytics.
+Data sources: The app fetches official dam data published by the Ministry of Land, Infrastructure, Transport and Tourism (MLIT) of Japan. Real-time data is fetched by default via sudmonitor (https://sudmonitor.kusugami-lab.net), a self-hosted, non-official caching relay of the same MLIT data; the official MLIT sources can be selected instead in the app settings. Daily historical data is provided through the sudmonitor relay only. This app contains no ads, trackers or analytics.
+
+Anti-Feature (NonFreeNet): the default connection to the self-hosted sudmonitor relay is classified as a non-free network service.
