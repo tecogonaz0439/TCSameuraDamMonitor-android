@@ -974,14 +974,16 @@ class MainViewModelTest {
         advanceUntilIdle()
 
         assertTrue(fixture.settingsRepository.current.autoUpdateEnabled)
+        assertTrue(fixture.settingsRepository.current.showNotification)
         assertTrue(fixture.settingsRepository.current.isFirstRunAfterReschedule)
         assertEquals(next, fixture.settingsRepository.current.nextScheduledUpdateMillis)
         assertEquals(next, fixture.workGateway.scheduled.single().second)
         assertEquals("Auto update enabled (initial dialog).", fixture.debugLogRepository.addedEntries.single().first)
+        assertTrue(fixture.viewModel.uiState.value.showInitialNotificationPermissionRequest)
     }
 
     @Test
-    fun markInitialAutoUpdateDialogShown_hidesDialogAndSetsNotificationFlag() = runTest(mainDispatcherRule.testDispatcher) {
+    fun markInitialAutoUpdateDialogShown_hidesDialogAndDoesNotSetNotificationFlag() = runTest(mainDispatcherRule.testDispatcher) {
         val fixture = createViewModel(settings = stableSettings(initialDialogShown = false), initialData = null)
         advanceUntilIdle()
 
@@ -990,15 +992,24 @@ class MainViewModelTest {
 
         assertTrue(fixture.settingsRepository.current.initialAutoUpdateDialogShown)
         assertFalse(fixture.viewModel.uiState.value.showInitialAutoUpdateDialog)
-        assertTrue(fixture.viewModel.uiState.value.showInitialNotificationPermissionRequest)
+        assertFalse(fixture.viewModel.uiState.value.showInitialNotificationPermissionRequest)
     }
 
     @Test
     fun markInitialNotificationPermissionRequested_clearsNotificationFlag() = runTest(mainDispatcherRule.testDispatcher) {
-        val fixture = createViewModel(settings = stableSettings(initialDialogShown = false), initialData = null)
+        // markInitialAutoUpdateDialogShown() no longer requests the notification permission,
+        // so enable auto-update from the initial dialog to set the permission request flag.
+        val fixture = createViewModel(
+            settings = stableSettings(initialDialogShown = false)
+                .copy(
+                    autoUpdateInterval = AutoUpdateInterval.ONE_HOUR,
+                    autoUpdateCustomTimingMillisHourly = jstMillis("2099/01/01 05:15")
+                ),
+            initialData = null
+        )
         advanceUntilIdle()
 
-        fixture.viewModel.markInitialAutoUpdateDialogShown()
+        fixture.viewModel.enableAutoUpdateFromInitialDialog()
         advanceUntilIdle()
         assertTrue(fixture.viewModel.uiState.value.showInitialNotificationPermissionRequest)
 

@@ -224,7 +224,7 @@ class SettingsDataStore private constructor(
                 ?.let { runCatching { AppTheme.valueOf(it) }.getOrNull() }
                 ?: AppTheme.SYSTEM,
             autoUpdateEnabled = prefs[AUTO_UPDATE_ENABLED] ?: false,
-            showNotification = prefs[SHOW_NOTIFICATION] ?: true,
+            showNotification = prefs[SHOW_NOTIFICATION] ?: false,
             autoUpdateInterval = prefs[AUTO_UPDATE_INTERVAL]?.let {
                 runCatching { AutoUpdateInterval.valueOf(it) }.getOrNull()
             } ?: AutoUpdateInterval.ONE_WEEK,

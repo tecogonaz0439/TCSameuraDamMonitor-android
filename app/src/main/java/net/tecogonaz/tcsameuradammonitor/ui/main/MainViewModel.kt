@@ -935,8 +935,7 @@ class MainViewModel @Inject constructor(
             initAutoUpdateCustomTimings(appSettings)
             settingsRepository.updateSettings { it.copy(initialAutoUpdateDialogShown = true) }
             _uiState.update { it.copy(
-                showInitialAutoUpdateDialog = false,
-                showInitialNotificationPermissionRequest = true
+                showInitialAutoUpdateDialog = false
             ) }
         }
     }
@@ -966,6 +965,7 @@ class MainViewModel @Inject constructor(
             settingsRepository.updateSettings { s ->
                 var updated = s.copy(
                     autoUpdateEnabled = true,
+                    showNotification = true,
                     nextScheduledUpdateMillis = effectiveNext,
                     isFirstRunAfterReschedule = true
                 )
@@ -982,6 +982,7 @@ class MainViewModel @Inject constructor(
                 "Auto update enabled (initial dialog).",
                 "Interval: $intervalName, Next scheduled: $nextStr"
             )
+            _uiState.update { it.copy(showInitialNotificationPermissionRequest = true) }
         }
     }
 

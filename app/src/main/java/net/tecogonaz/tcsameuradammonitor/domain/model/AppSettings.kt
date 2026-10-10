@@ -73,7 +73,7 @@ enum class DebugDatSelectionMode {
 data class AppSettings(
     val theme: AppTheme = AppTheme.SYSTEM,
     val autoUpdateEnabled: Boolean = false,
-    val showNotification: Boolean = true,
+    val showNotification: Boolean = false,
     val autoUpdateInterval: AutoUpdateInterval = AutoUpdateInterval.ONE_WEEK,
     
     val initialAutoUpdateDialogShown: Boolean = false,

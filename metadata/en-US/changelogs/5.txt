@@ -1,0 +1,1 @@
+Keep notification setting off by default and request permission only when enabling auto-update or alerts.
