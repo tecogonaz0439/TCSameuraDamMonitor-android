@@ -336,6 +336,45 @@ class DrawerContentAndroidTest {
     }
 
     @Test
+    fun dailyHistoryEntry_missingLatestRate_showsFallbackFromValidRates() {
+        // 最新行（当日00:00）が欠測でも、MainUiState から渡される最初/最後の有効値で貯水率推移を表示する
+        val history = dailyHistory(
+            damId = DamConfig.DEFAULT.id,
+            firstStorageRatePct = null,
+            lastStorageRatePct = null
+        )
+        setDrawerContent(
+            sudmonitorHistory = history,
+            sudmonitorHistoryFirstValidRatePct = 82f,
+            sudmonitorHistoryLastValidRatePct = 83.5f,
+            isDailyHistoryEnabled = true
+        )
+
+        composeRule.onNodeWithContentDescription(
+            "早明浦ダム, 2026/07/01 01:00 - ${TimeUtils.appendJstSuffix("2026/08/01 00:00")}, 82.00% → 83.50% (79.00% ~ 82.00%)",
+            substring = true
+        ).assertIsDisplayed()
+    }
+
+    @Test
+    fun dailyHistoryEntry_noValidRate_showsMissingPlaceholder() {
+        // 期間内に有効値が1つも無い場合のみ欠測プレースホルダー（-- %）を表示する
+        val history = dailyHistory(
+            damId = DamConfig.DEFAULT.id,
+            firstStorageRatePct = null,
+            lastStorageRatePct = null
+        )
+        setDrawerContent(
+            sudmonitorHistory = history,
+            sudmonitorHistoryFirstValidRatePct = null,
+            sudmonitorHistoryLastValidRatePct = null,
+            isDailyHistoryEnabled = true
+        )
+
+        composeRule.onNodeWithContentDescription("-- %", substring = true).assertIsDisplayed()
+    }
+
+    @Test
     fun dailyHistoryEntry_notSelected_doesNotInvokeCallbackOnRepeatedClick() {
         val events = mutableListOf<String>()
         val history = dailyHistory(damId = DamConfig.DEFAULT.id)
@@ -428,6 +467,8 @@ class DrawerContentAndroidTest {
         onCopied: (String) -> Unit = {},
         isDailyHistoryEnabled: Boolean = false,
         sudmonitorHistory: SudmonitorHistory? = null,
+        sudmonitorHistoryFirstValidRatePct: Float? = sudmonitorHistory?.firstStorageRatePct,
+        sudmonitorHistoryLastValidRatePct: Float? = sudmonitorHistory?.lastStorageRatePct,
         isSudmonitorHistoryMode: Boolean = false,
         onSwitchToSudmonitorHistoryMode: () -> Unit = {},
         onCollapseSidebarClick: (() -> Unit)? = null
@@ -452,6 +493,8 @@ class DrawerContentAndroidTest {
                     onSwitchToHistoricalMode = onSwitchToHistoricalMode,
                     isDailyHistoryEnabled = isDailyHistoryEnabled,
                     sudmonitorHistory = sudmonitorHistory,
+                    sudmonitorHistoryFirstValidRatePct = sudmonitorHistoryFirstValidRatePct,
+                    sudmonitorHistoryLastValidRatePct = sudmonitorHistoryLastValidRatePct,
                     isSudmonitorHistoryMode = isSudmonitorHistoryMode,
                     onSwitchToSudmonitorHistoryMode = onSwitchToSudmonitorHistoryMode,
                     lastFetchDateStr = "2026/05/17",
@@ -473,7 +516,9 @@ class DrawerContentAndroidTest {
 
     private fun dailyHistory(
         damId: String,
-        nextUpdateAtEpochMs: Long = 0L
+        nextUpdateAtEpochMs: Long = 0L,
+        firstStorageRatePct: Float? = 80f,
+        lastStorageRatePct: Float? = 81f
     ): SudmonitorHistory =
         SudmonitorHistory(
             damId = damId,
@@ -481,8 +526,8 @@ class DrawerContentAndroidTest {
             periodEndEpochMs = jstDayStartMillis(2026, 7, 31),
             status = SudmonitorHistory.STATUS_SUCCESS,
             rowCount = 2,
-            firstStorageRatePct = 80f,
-            lastStorageRatePct = 81f,
+            firstStorageRatePct = firstStorageRatePct,
+            lastStorageRatePct = lastStorageRatePct,
             minStorageRatePct = 79f,
             maxStorageRatePct = 82f,
             fetchedAtEpochMs = 1L,

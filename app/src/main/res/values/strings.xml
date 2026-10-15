@@ -203,7 +203,6 @@
     <string name="settings_general_auto_update_interval_one_day">1 Day</string>
     <string name="settings_general_auto_update_interval_12_hours">12 Hours</string>
     <string name="settings_general_auto_update_interval_one_hour">1 Hour</string>
-    <string name="settings_general_auto_update_daily_history_note">The daily historical data auto-update interval is 1 day</string>
     <string name="settings_general_auto_update_last">Auto Update: Last (Actual)</string>
 
     <string name="settings_general_auto_update_next_timing">Auto Update: Next</string>
@@ -427,8 +426,8 @@
     <string name="app_info_privacy_policy">Privacy Policy</string>
     <string name="app_info_privacy_policy_ja">Privacy Policy (Japanese original text)</string>
     <string name="app_info_oss_license">OSS License</string>
-    <string name="app_info_codeberg">Repository (Codeberg)</string>
     <string name="app_info_github">Repository (GitHub)</string>
+    <string name="app_info_fdroid">App Store (F-Droid)</string>
 
     <string name="dialog_version_format">Version %1$s (Build %2$d)</string>
     <string name="dialog_terms_of_use_title">Terms of Use</string>

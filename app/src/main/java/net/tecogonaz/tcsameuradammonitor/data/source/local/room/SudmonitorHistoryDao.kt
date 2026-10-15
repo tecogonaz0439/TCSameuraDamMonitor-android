@@ -108,6 +108,21 @@ interface SudmonitorHistoryDao {
     suspend fun getAllObservations(damId: String): List<SudmonitorHistoryObservationEntity>
 
     /**
+     * 指定されたダムの最新観測明細行（[SudmonitorHistoryObservationEntity.timeEpochMs] 降順の先頭1件）を取得します。
+     *
+     * 日次自動収集ゲート（最終行が当日 00:00 JST かつ貯水率が有効か）の判定に使用します。
+     * 前日 `24:00` 表記は保存時に当日 00:00 へ正規化されるため、この比較だけで当日分の有無を判定できます。
+     *
+     * @param damId 対象ダムの観測所ID
+     * @return 最新の観測明細エンティティ、観測行が存在しない場合は null
+     */
+    @Query(
+        "SELECT * FROM sudmonitor_history_observation " +
+            "WHERE damId = :damId ORDER BY timeEpochMs DESC LIMIT 1"
+    )
+    suspend fun findLatestObservation(damId: String): SudmonitorHistoryObservationEntity?
+
+    /**
      * 指定されたダムの観測明細行を、時刻範囲（[from] 以上 [to] 以下）で時刻昇順に取得します。
      *
      * @param damId 対象ダムの観測所ID

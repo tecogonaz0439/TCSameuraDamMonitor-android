@@ -28,7 +28,6 @@ import net.tecogonaz.tcsameuradammonitor.data.source.remote.SudmonitorEndpointCo
 import net.tecogonaz.tcsameuradammonitor.data.source.remote.SudmonitorHistoricalClient
 import net.tecogonaz.tcsameuradammonitor.data.source.remote.createMlitHttpClient
 import net.tecogonaz.tcsameuradammonitor.domain.model.AppSettings
-import net.tecogonaz.tcsameuradammonitor.domain.model.AutoUpdateInterval
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamConfig
 import net.tecogonaz.tcsameuradammonitor.domain.model.DebugDatSelectionMode
 import net.tecogonaz.tcsameuradammonitor.domain.model.DebugSimulateMode
@@ -64,8 +63,8 @@ import java.util.UUID
  * （[FakeSudmonitorHistoryDao]）・トランザクションランナー・設定リポジトリを組み合わせて、
  * 取得→保存（行 + 観測行・統計・次回更新時刻）、404（未蓄積）スキップ、5xx・タイムアウト失敗、
  * `X-TCS-Next-Update-At` 欠落時の翌日 00:13 JST フォールバック、ダムごと上書き（D3）、
- * `autoFetch` のクールダウン判定（1時間/12時間 スキップ・1日/7日 実行・行未保存時は即実行・
- * ゲート無効時は何もしない）を検証します。
+ * `autoFetch` の当日00:00ゲート（最新行=当日00:00有効→スキップ / 欠測・古い・未保存→実行 /
+ * ゲート無効時は何もしない / Debug ON時は常に実行）を検証します。
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class SudmonitorHistoryRepositoryImplTest {
@@ -283,6 +282,52 @@ class SudmonitorHistoryRepositoryImplTest {
     }
 
     @Test
+    fun fetchAndStore_t24UntilStoresCoverageThroughPreviousDay() = runTest {
+        server.enqueue(
+            successResponse(
+                rows = listOf(
+                    row("2026/7/31", "01:00", "80.0"),
+                    row("2026/7/31", "24:00", "81.0")
+                ),
+                since = "2026-07-31T01:00:00+09:00",
+                until = "2026-07-31T24:00:00+09:00"
+            )
+        )
+        val dao = FakeSudmonitorHistoryDao()
+        val repository = createRepository(realClient(), dao = dao)
+
+        val result = repository.fetchAndStore(TEST_DAM_ID, supportedDam(), SudmonitorHistoryTrigger.INITIAL)
+
+        assertTrue(result.isRight())
+        val history = (result.getOrNull() as SudmonitorHistoryFetchResult.Success).history
+        assertEquals(jstDayStartMillis(2026, 7, 31), history.periodStartEpochMs)
+        assertEquals(jstDayStartMillis(2026, 7, 31), history.periodEndEpochMs)
+        assertEquals(2, history.rowCount)
+    }
+
+    @Test
+    fun fetchAndStore_invalidT24UntilStoresUnknownCoverageWithoutObservations() = runTest {
+        server.enqueue(
+            successResponse(
+                rows = listOf(row("2026/7/31", "01:00", "80.0")),
+                since = "2026-07-31T01:00:00+09:00",
+                until = "2026-07-31T24:01:00+09:00"
+            )
+        )
+        val dao = FakeSudmonitorHistoryDao()
+        val repository = createRepository(realClient(), dao = dao)
+
+        val result = repository.fetchAndStore(TEST_DAM_ID, supportedDam(), SudmonitorHistoryTrigger.INITIAL)
+
+        assertTrue(result.isRight())
+        val history = (result.getOrNull() as SudmonitorHistoryFetchResult.Success).history
+        assertNull(history.periodStartEpochMs)
+        assertNull(history.periodEndEpochMs)
+        assertEquals(0, history.rowCount)
+        assertEquals(0, dao.insertObservationsCalls)
+    }
+
+    @Test
     fun fetchAndStore_secondFetch_overwritesRowAndObservationsForSameDam() = runTest {
         // 1回目: 2行
         server.enqueue(
@@ -461,12 +506,13 @@ class SudmonitorHistoryRepositoryImplTest {
     }
 
     @Test
-    fun manualRefreshAvailableAt_returnsNextUpdateAtFromRow() = runTest {
-        val entity = historyEntity(nextUpdateAtEpochMs = 456L)
+    fun manualRefreshAvailableAt_returnsFetchedAtPlusOneHour() = runTest {
+        val entity = historyEntity(nextUpdateAtEpochMs = 456L).copy(fetchedAtEpochMs = 1_000_000L)
         val dao = FakeSudmonitorHistoryDao().also { it.reset(historyRow = entity) }
         val repository = createRepository(realClient(), dao = dao)
 
-        assertEquals(456L, repository.manualRefreshAvailableAt(TEST_DAM_ID))
+        // 次回更新予定時刻ではなく、最終成功取得時刻 + 1時間を返す
+        assertEquals(1_000_000L + 60 * 60 * 1000L, repository.manualRefreshAvailableAt(TEST_DAM_ID))
         assertNull(repository.manualRefreshAvailableAt("other"))
     }
 
@@ -566,85 +612,75 @@ class SudmonitorHistoryRepositoryImplTest {
         assertNull(emissions[2])
     }
 
-    // ---- autoFetch（D7 のクールダウン判定） ----
+    // ---- autoFetch（当日00:00ゲート） ----
 
     @Test
-    fun autoFetch_oneHour_skipsWhileCooldownActive() = runTest {
+    fun autoFetch_latestRowIsToday0000WithValidRate_skips() = runTest {
         mockAndroidLog()
         server.enqueue(successResponse(rows = listOf(row("2026/8/1", "01:00", "80.0"))))
+        // 保存行は前日 24:00 表記が当日 00:00 JST へ正規化された有効値
         val dao = FakeSudmonitorHistoryDao().also {
-            it.reset(historyRow = historyEntity(nextUpdateAtEpochMs = currentTimeMillis + 60_000L))
+            it.reset(
+                historyRow = historyEntity(nextUpdateAtEpochMs = currentTimeMillis + 60_000L),
+                observations = listOf(
+                    observationEntity(time = "2026/07/31 24:00", storagePercentage = 78.5f, rowNo = 0)
+                )
+            )
         }
         val repository = createRepository(realClient(), dao = dao)
 
-        repository.autoFetch(AutoUpdateInterval.ONE_HOUR, currentTimeMillis, TEST_DAM_ID)
+        repository.autoFetch(currentTimeMillis, TEST_DAM_ID)
 
         assertEquals(0, server.requestCount)
         assertEquals(0, dao.upsertCalls)
     }
 
     @Test
-    fun autoFetch_twelveHours_skipsWhileCooldownActive() = runTest {
-        mockAndroidLog()
-        val dao = FakeSudmonitorHistoryDao().also {
-            it.reset(historyRow = historyEntity(nextUpdateAtEpochMs = currentTimeMillis + 60_000L))
-        }
-        val repository = createRepository(realClient(), dao = dao)
-
-        repository.autoFetch(AutoUpdateInterval.TWELVE_HOURS, currentTimeMillis, TEST_DAM_ID)
-
-        assertEquals(0, server.requestCount)
-    }
-
-    @Test
-    fun autoFetch_oneHour_expiredCooldown_runs() = runTest {
+    fun autoFetch_latestRowIsToday0000WithMissingRate_runs() = runTest {
         server.enqueue(successResponse(rows = listOf(row("2026/8/1", "01:00", "80.0"))))
+        // 当日00:00の貯水率が欠測なら、suduploder の再収集に追随して取得する
         val dao = FakeSudmonitorHistoryDao().also {
-            it.reset(historyRow = historyEntity(nextUpdateAtEpochMs = currentTimeMillis - 1L))
+            it.reset(
+                historyRow = historyEntity(nextUpdateAtEpochMs = currentTimeMillis + 60_000L),
+                observations = listOf(
+                    observationEntity(time = "2026/08/01 00:00", storagePercentage = null, rowNo = 0)
+                )
+            )
         }
         val repository = createRepository(realClient(), dao = dao)
 
-        repository.autoFetch(AutoUpdateInterval.ONE_HOUR, currentTimeMillis, TEST_DAM_ID)
+        repository.autoFetch(currentTimeMillis, TEST_DAM_ID)
 
         assertEquals(1, server.requestCount)
         assertEquals(1, dao.upsertCalls)
     }
 
     @Test
-    fun autoFetch_oneDay_runsEveryTime() = runTest {
+    fun autoFetch_latestRowOlderThanToday_runs() = runTest {
         server.enqueue(successResponse(rows = listOf(row("2026/8/1", "01:00", "80.0"))))
         val dao = FakeSudmonitorHistoryDao().also {
-            it.reset(historyRow = historyEntity(nextUpdateAtEpochMs = currentTimeMillis + 60_000L))
+            it.reset(
+                historyRow = historyEntity(nextUpdateAtEpochMs = currentTimeMillis + 60_000L),
+                observations = listOf(
+                    observationEntity(time = "2026/07/31 23:00", storagePercentage = 78.5f, rowNo = 0)
+                )
+            )
         }
         val repository = createRepository(realClient(), dao = dao)
 
-        repository.autoFetch(AutoUpdateInterval.ONE_DAY, currentTimeMillis, TEST_DAM_ID)
+        repository.autoFetch(currentTimeMillis, TEST_DAM_ID)
 
         assertEquals(1, server.requestCount)
         assertEquals(1, dao.upsertCalls)
     }
 
     @Test
-    fun autoFetch_oneWeek_runsEveryTime() = runTest {
-        server.enqueue(successResponse(rows = listOf(row("2026/8/1", "01:00", "80.0"))))
-        val dao = FakeSudmonitorHistoryDao().also {
-            it.reset(historyRow = historyEntity(nextUpdateAtEpochMs = currentTimeMillis + 60_000L))
-        }
-        val repository = createRepository(realClient(), dao = dao)
-
-        repository.autoFetch(AutoUpdateInterval.ONE_WEEK, currentTimeMillis, TEST_DAM_ID)
-
-        assertEquals(1, server.requestCount)
-        assertEquals(1, dao.upsertCalls)
-    }
-
-    @Test
-    fun autoFetch_rowNotStored_runsWithoutCooldownCheck() = runTest {
+    fun autoFetch_noObservationRow_runs() = runTest {
         server.enqueue(successResponse(rows = listOf(row("2026/8/1", "01:00", "80.0"))))
         val dao = FakeSudmonitorHistoryDao()
         val repository = createRepository(realClient(), dao = dao)
 
-        repository.autoFetch(AutoUpdateInterval.ONE_HOUR, currentTimeMillis, TEST_DAM_ID)
+        repository.autoFetch(currentTimeMillis, TEST_DAM_ID)
 
         assertEquals(1, server.requestCount)
         assertEquals(1, dao.upsertCalls)
@@ -659,10 +695,35 @@ class SudmonitorHistoryRepositoryImplTest {
             settings = AppSettings(historicalDataSource = RealtimeDataSource.MLIT_DIRECT)
         )
 
-        repository.autoFetch(AutoUpdateInterval.ONE_DAY, currentTimeMillis, TEST_DAM_ID)
+        repository.autoFetch(currentTimeMillis, TEST_DAM_ID)
 
         assertEquals(0, server.requestCount)
         assertEquals(0, dao.upsertCalls)
+    }
+
+    @Test
+    fun autoFetch_debugMode_bypassesGateAndRuns() = runTest {
+        // Debug ON 時はゲート判定を行わず、常に Debug DAT 読込経路を実行する
+        val dao = FakeSudmonitorHistoryDao().also {
+            it.reset(
+                historyRow = historyEntity(),
+                observations = listOf(
+                    observationEntity(time = "2026/08/01 00:00", storagePercentage = 78.5f, rowNo = 0)
+                )
+            )
+        }
+        val reader = mockk<DebugDatSourceReader>()
+        every { reader.readBundled(any()) } returns completeDailyDatBytes()
+        val repository = createRepository(
+            client = mockk(),
+            dao = dao,
+            settings = debugSettings(DebugDatSelectionMode.BUNDLED),
+            debugDatSourceReader = reader
+        )
+
+        repository.autoFetch(currentTimeMillis, TEST_DAM_ID)
+
+        assertEquals(1, dao.upsertCalls)
     }
 
     @Test
@@ -675,7 +736,7 @@ class SudmonitorHistoryRepositoryImplTest {
         val repository = createRepository(client, dao = dao)
 
         // autoFetch は失敗を握りつぶし（ログのみ）、例外を投げない
-        repository.autoFetch(AutoUpdateInterval.ONE_DAY, currentTimeMillis, TEST_DAM_ID)
+        repository.autoFetch(currentTimeMillis, TEST_DAM_ID)
 
         assertEquals(0, dao.upsertCalls)
         assertNull(dao.historyRow)
@@ -804,7 +865,7 @@ class SudmonitorHistoryRepositoryImplTest {
 
     private fun observationEntity(
         time: String,
-        storagePercentage: Float,
+        storagePercentage: Float?,
         rowNo: Int
     ): SudmonitorHistoryObservationEntity =
         SudmonitorHistoryObservationEntity(

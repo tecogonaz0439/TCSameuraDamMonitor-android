@@ -222,6 +222,54 @@ class SudmonitorHistoryDisplayAndroidTest {
     }
 
     @Test
+    fun dailyHistoryMode_summaryCard_fallsBackToValidObservationsWhenLatestRateMissing() {
+        // 最新行（当日00:00）が欠測でも、観測行の最初/最後の有効値で貯水率推移を表示する
+        sudmonitorHistoryFake.reset(
+            history = dailyHistory(firstStorageRatePct = null, lastStorageRatePct = null),
+            observations = dailyObservations()
+        )
+
+        ActivityScenario.launch(MainActivity::class.java).use {
+            waitForMainRoot()
+            enterDailyHistoryMode()
+            waitForText(targetString(R.string.main_title_daily_history_data))
+
+            if (isPermanentLayout()) return
+
+            composeRule.onNodeWithTag(TestTags.HISTORICAL_SUMMARY_CARD).performScrollTo()
+            composeRule.onNode(
+                hasText("80.00% → 80.00% (79.00% ~ 82.00%)") and
+                        hasAnyAncestor(hasTestTag(TestTags.HISTORICAL_SUMMARY_CARD)),
+                useUnmergedTree = true
+            ).assertIsDisplayed()
+        }
+    }
+
+    @Test
+    fun dailyHistoryMode_summaryCard_noValidRate_showsMissingPlaceholder() {
+        // 期間内に有効値が1つも無い場合のみ、貯水率推移行は欠測プレースホルダーになる
+        sudmonitorHistoryFake.reset(
+            history = dailyHistory(firstStorageRatePct = null, lastStorageRatePct = null),
+            observations = dailyObservations().map { it.copy(storagePercentage = null) }
+        )
+
+        ActivityScenario.launch(MainActivity::class.java).use {
+            waitForMainRoot()
+            enterDailyHistoryMode()
+            waitForText(targetString(R.string.main_title_daily_history_data))
+
+            if (isPermanentLayout()) return
+
+            composeRule.onNodeWithTag(TestTags.HISTORICAL_SUMMARY_CARD).performScrollTo()
+            composeRule.onNode(
+                hasText("-- %", substring = true) and
+                        hasAnyAncestor(hasTestTag(TestTags.HISTORICAL_SUMMARY_CARD)),
+                useUnmergedTree = true
+            ).assertIsDisplayed()
+        }
+    }
+
+    @Test
     fun dailyMode_emptyState_summaryCardShowsDamNameOnlyAndHidesCards() {
         sudmonitorHistoryFake.reset(history = null, observations = emptyList())
 
@@ -309,10 +357,11 @@ class SudmonitorHistoryDisplayAndroidTest {
     }
 
     @Test
-    fun dailyHistoryMode_manualUpdateCooldown_showsSnackbarWithSavedTime() {
-        val nextUpdateAt = System.currentTimeMillis() + 60 * 60 * 1000L
+    fun dailyHistoryMode_manualUpdateCooldown_showsSnackbarWithFetchedAtPlusOneHour() {
+        // cooldown 終了時刻は最終成功取得時刻 + 1時間（nextUpdateAtEpochMs ではない）
+        val fetchedAt = System.currentTimeMillis()
         sudmonitorHistoryFake.reset(
-            history = dailyHistory(nextUpdateAtEpochMs = nextUpdateAt),
+            history = dailyHistory(fetchedAtEpochMs = fetchedAt),
             observations = dailyObservations()
         )
 
@@ -321,11 +370,11 @@ class SudmonitorHistoryDisplayAndroidTest {
             enterDailyHistoryMode()
             waitForText(targetString(R.string.main_title_daily_history_data))
 
-            // cooldown 中の手動更新は実行されず、保存済み次回更新時刻を Snackbar 表示する
+            // cooldown 中の手動更新は実行されず、cooldown 終了時刻（取得時刻+1時間）を Snackbar 表示する
             composeRule.onNodeWithTag(TestTags.MANUAL_UPDATE_BUTTON).performClick()
 
             val expectedTime = TimeUtils.appendJstSuffix(
-                TimeUtils.formatToJst(nextUpdateAt, "yyyy/MM/dd HH:mm")
+                TimeUtils.formatToJst(fetchedAt + 60 * 60 * 1000L, "yyyy/MM/dd HH:mm")
             )
             composeRule.waitUntil(timeoutMillis = 5_000) {
                 composeRule.onAllNodesWithText(expectedTime, substring = true)
@@ -552,7 +601,10 @@ class SudmonitorHistoryDisplayAndroidTest {
         )
 
     private fun dailyHistory(
-        nextUpdateAtEpochMs: Long = jstMillis("2026/08/02 00:13")
+        nextUpdateAtEpochMs: Long = jstMillis("2026/08/02 00:13"),
+        firstStorageRatePct: Float? = 80f,
+        lastStorageRatePct: Float? = 81f,
+        fetchedAtEpochMs: Long = jstMillis("2026/08/01 05:15")
     ): SudmonitorHistory =
         SudmonitorHistory(
             damId = AppSettings.DEFAULT_DAM_ID,
@@ -560,11 +612,11 @@ class SudmonitorHistoryDisplayAndroidTest {
             periodEndEpochMs = jstMillis("2026/07/31 00:00"),
             status = SudmonitorHistory.STATUS_SUCCESS,
             rowCount = 35,
-            firstStorageRatePct = 80f,
-            lastStorageRatePct = 81f,
+            firstStorageRatePct = firstStorageRatePct,
+            lastStorageRatePct = lastStorageRatePct,
             minStorageRatePct = 79f,
             maxStorageRatePct = 82f,
-            fetchedAtEpochMs = jstMillis("2026/08/01 05:15"),
+            fetchedAtEpochMs = fetchedAtEpochMs,
             nextUpdateAtEpochMs = nextUpdateAtEpochMs,
             rawDatPath = null,
             updatedAtEpochMs = jstMillis("2026/08/01 05:15")

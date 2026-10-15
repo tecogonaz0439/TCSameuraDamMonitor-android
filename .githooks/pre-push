@@ -1,0 +1,24 @@
+#!/bin/sh
+# pre-push hook: push 対象コミットの段階① verify(scripts/cicd/verify.sh)が
+# 未実施または失敗のままなら push を中断する。
+#
+# verify.sh は成功時に build/agent-verify-stamp へ「コミットハッシュ 実行時刻」を
+# 記録する。stamp のコミットハッシュが push しようとしている HEAD と一致する場合は
+# 再実行を省略して push を通す。rebase・amend でコミットが変わった場合は再実行が
+# 必要になる(意図的な安全側の設計である)。
+#
+# 有効化: git config core.hooksPath .githooks
+
+stamp="build/agent-verify-stamp"
+head_commit="$(git rev-parse HEAD)"
+
+if [ -f "$stamp" ]; then
+  stamped_commit="$(cut -d' ' -f1 "$stamp")"
+  if [ "$stamped_commit" = "$head_commit" ]; then
+    exit 0
+  fi
+fi
+
+echo "pre-push: verify has not passed for commit ${head_commit}." >&2
+echo "pre-push: run 'sh scripts/cicd/verify.sh' before pushing." >&2
+exit 1

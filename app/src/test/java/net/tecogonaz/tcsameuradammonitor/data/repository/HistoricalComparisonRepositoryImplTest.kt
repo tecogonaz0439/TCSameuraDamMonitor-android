@@ -10,7 +10,6 @@ import net.tecogonaz.tcsameuradammonitor.data.source.local.HistoricalDatFileTabl
 import net.tecogonaz.tcsameuradammonitor.data.source.remote.DamFileParser
 import net.tecogonaz.tcsameuradammonitor.data.source.remote.MlitEndpointConfig
 import net.tecogonaz.tcsameuradammonitor.domain.model.AppSettings
-import net.tecogonaz.tcsameuradammonitor.domain.model.AutoUpdateInterval
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamConfig
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamHistoricalData
 import net.tecogonaz.tcsameuradammonitor.domain.model.HistoricalComparisonMetric
@@ -693,7 +692,7 @@ private fun fakeSudmonitorRepository(rows: List<DamHistoricalData> = emptyList()
 
         override suspend fun manualRefreshAvailableAt(damId: String): Long? = null
 
-        override suspend fun autoFetch(interval: AutoUpdateInterval, now: Long, damId: String) = Unit
+        override suspend fun autoFetch(now: Long, damId: String) = Unit
 
         override suspend fun getAllObservations(damId: String): List<DamHistoricalData> = rows
 

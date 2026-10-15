@@ -1,6 +1,6 @@
 # Terms of Use
 
-**Last updated: September 5, 2026**
+**Last updated: October 15, 2026**
 
 > This English version is a translation of the Japanese original `TERMS-ja.md`. The Japanese original is the authoritative text. If there is any discrepancy or conflict between this English translation and the Japanese original, the Japanese original prevails.
 
@@ -30,16 +30,16 @@ Displayed values, notifications, widgets, historical graphs, day-over-day change
 
 ## 4. Distribution Sources and APK Distribution
 
-The official distribution sources for the App are the Releases pages of the development repositories, **Codeberg** (primary) and **GitHub** (mirror). Built `.apk` files are distributed.
+The official distribution sources for the App are **F-Droid** and **GitHub Releases**, where signed `.apk` files are available.
 
-- Codeberg Releases: https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android/releases
+- F-Droid: https://f-droid.org/packages/net.tecogonaz.tcsameuradammonitor/
 - GitHub Releases: https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/releases
 
-The distribution of the App on app stores such as F-Droid or Google Play will be conducted at a later date, and it is not currently distributed on general app stores.
+Google Play distribution is currently being prepared for open testing.
 
-If you obtain the App from app stores such as F-Droid or Google Play in the future, the terms of use, policies, and other applicable conditions of each store govern matters relating to acquisition, distribution, updates, listing, suspension, and similar procedures. If these Terms conflict with the store's terms regarding store procedures or functions, the store's terms prevail for that scope.
+If you obtain the App from app stores such as F-Droid or Google Play, the terms of use, policies, and other applicable conditions of each store govern matters relating to acquisition, distribution, updates, listing, suspension, and similar procedures. If these Terms conflict with the store's terms regarding store procedures or functions, the store's terms prevail for that scope.
 
-The App is distributed as an executable APK file through the source code repositories above. If you obtain and install an APK from outside a general app store, the store's mechanisms for distribution, updates, review, signing, security checks, and similar functions do not apply. You are responsible for checking the source, signature, authenticity of the file, device settings (allowing installation from unknown sources), installability, and risks associated with installation.
+Executable APK files are also distributed through GitHub Releases. If you obtain and install an APK from outside a general app store, the store's mechanisms for distribution, updates, review, signing, security checks, and similar functions do not apply. You are responsible for checking the source, signature, authenticity of the file, device settings (allowing installation from unknown sources), installability, and risks associated with installation.
 
 We do not guarantee the safety, completeness, authenticity, operation, updates, or support of APKs obtained from sources other than official distribution sources, APKs modified or rebuilt by third parties, derivative versions, mirror distributions, or distributions through unofficial stores.
 
@@ -49,7 +49,7 @@ The official distribution version of the App currently does not provide paid sal
 
 The source code of the App is published under the Apache License, Version 2.0. You may use, reproduce, modify, and distribute the source code and object code in accordance with that license.
 
-The App uses multiple open source libraries under their respective licenses. Major runtime dependencies included in the Android version are described in `OSS-LICENSE.md`.
+The App uses multiple open source libraries under their respective licenses. Major runtime dependencies and third-party artwork included in the Android version are described in `OSS-LICENSE.md`. The F-Droid link icon is an adaptation of the F-Droid logo and is licensed separately under CC-BY-SA-3.0.
 
 If you distribute a modified or derivative version using the App's name, icon, screens, description, repository information, developer name, attribution notices, or similar materials, do not mislead users into believing that it is an official version, approved version, or sponsored version of MLIT or any other third party. If you distribute a modified version, comply with the Apache License, Version 2.0, applicable laws, the terms of the distribution store, and third-party rights.
 
@@ -81,7 +81,7 @@ Debug logs are recorded automatically and stored locally. Exporting or sharing t
 
 ## 8. External Services and Links
 
-The App may link to, launch, or share content with external services or external apps, including MLIT-related pages, map apps, browsers, OS sharing features, Codeberg, and GitHub.
+The App may link to, launch, or share content with external services or external apps, including MLIT-related pages, map apps, browsers, OS sharing features, and GitHub.
 
 Use of external services or external apps is subject to the terms, privacy policies, and usage conditions of each provider. We are not responsible for the content, availability, accuracy, safety, changes, suspension, or results of use of external services or external apps.
 
@@ -92,7 +92,7 @@ You must use the App in compliance with applicable laws, these Terms, the terms 
 You must not engage in the following acts.
 
 - Acts that violate laws, public order and morals, third-party rights, these Terms, or the terms of distribution sources
-- Acts that impose excessive load, cause failures, perform unauthorized access, or interfere with the App, MLIT public servers, the cache server, Codeberg, GitHub, external services, third-party devices, or networks
+- Acts that impose excessive load, cause failures, perform unauthorized access, or interfere with the App, MLIT public servers, the cache server, GitHub, external services, third-party devices, or networks
 - Acts that mislead users into believing that the App or a modified version is an official version, approved version, or sponsored version of MLIT or any other third party
 - Acts of using or distributing the App or a modified version for malware, unauthorized code, phishing, fraud, impersonation, false display, misleading display, or deception of users
 - Acts of presenting displayed data from the App as if it were official information and causing third parties to make incorrect important decisions
@@ -102,7 +102,7 @@ You must not engage in the following acts.
 
 We may change the App's features, specifications, displays, supported OS versions, supported devices, distribution methods, distribution sources, repositories, documentation, Privacy Policy, or these Terms as necessary.
 
-We may suspend or terminate distribution, updates, provision, or support of the App due to changes in MLIT public data specifications, suspension of external services, changes in policies or terms of distribution platforms such as Codeberg/GitHub, changes in F-Droid or other store policies, security reasons, maintenance, legal requirements, or other unavoidable circumstances.
+We may suspend or terminate distribution, updates, provision, or support of the App due to changes in MLIT public data specifications, suspension of external services, changes in policies or terms of distribution platforms such as GitHub, changes in F-Droid or other store policies, security reasons, maintenance, legal requirements, or other unavoidable circumstances.
 
 If these Terms are changed, the revised Terms take effect when published in the repository, in the App, on a distribution page, or by another method we deem appropriate. If you use the App after the change, you are deemed to have agreed to the revised Terms.
 
@@ -130,8 +130,8 @@ If a dispute arises between us and a user in connection with these Terms or the 
 
 ## 15. Contact
 
-As a general rule, inquiries regarding these Terms, the App, the Privacy Policy, or licenses should be made through Issues in the source code repository (Codeberg).
+As a general rule, inquiries regarding these Terms, the App, the Privacy Policy, or licenses should be submitted through [Issues in the GitHub repository](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/issues).
 
-- Codeberg: https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android
+Issues are public. Do not include personal or confidential information.
 
 We do not guarantee individual responses, investigations, fixes, updates, or support for all inquiries.

@@ -240,10 +240,33 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
             """.trimIndent()
         ),
+        OssInfo(
+            name = "F-Droid Artwork",
+            url = "https://gitlab.com/fdroid/artwork",
+            copyright = """
+Copyright 2012 William Theaker
+Copyright 2013 Robert Martinez
+Copyright 2015 Andrew Nayenko <relan@airpost.net>
+Copyright 2026 tecogonaz (monochrome adaptation)
+            """.trimIndent(),
+            licenseText = """
+F-Droid logo (2015), used under Creative Commons Attribution-ShareAlike 3.0 Unported.
+License: https://creativecommons.org/licenses/by-sa/3.0/
+Source: https://gitlab.com/fdroid/artwork/-/blob/master/fdroid-logo-2015/fdroid-logo.svg
+Changes: monochrome silhouette, transparent details, removal of shading.
+The adapted icon is also licensed under CC-BY-SA-3.0.
+This use does not imply endorsement by F-Droid.
+
+F-Droidロゴ（2015年版）をCC BY-SA 3.0で利用しています。
+単色化し、陰影を除去し、目・リング・中央記号を透過に加工しました。
+加工後のアイコンにもCC BY-SA 3.0を適用します。
+F-Droidとの提携や推奨を示すものではありません。
+            """.trimIndent()
+        ),
     )
 
     val PRIVACY_POLICY = """
-**Last updated: September 5, 2026**
+**Last updated: September 24, 2026**
 
 > This English version is a translation of the Japanese original version. The Japanese original is the authoritative text. If there is any discrepancy or conflict between this English translation and the Japanese original, the Japanese original prevails.
 
@@ -286,22 +309,20 @@ This Privacy Policy may be updated to reflect changes to the App, the services i
 
 ## Contact
 
-For questions about this Privacy Policy, please open an issue in the source code repository on Codeberg. Issues are public, so do not include your name, email address, or any other personal information.
-
-- Codeberg: https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android
+For questions about this Privacy Policy, use [Issues in the GitHub repository](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/issues). Issues are public, so do not include your name, email address, or other personal information.
 
     """.trimIndent()
 
     val PRIVACY_POLICY_JA = """
-**最終更新日: 2026-09-05**
+**最終更新日: 2026-09-24**
 
 ## 適用範囲と取得しない情報
 
 本ポリシーは、開発者が公式に配布する Android 版 **早明浦ダム 貯水率モニタ**（以下「本アプリ」）に適用されます。本アプリは、国土交通省の水文水質データベースで公開されるダム諸量データを取得して表示します。
 
-本アプリはアカウント登録や氏名、メールアドレス、電話番号等の入力を求めません。端末の位置情報 API から得る位置情報、IMEI や広告 ID 等の端末識別子も取得しません。広告、利用状況の分析・追跡を行う SDK や、本プロジェクト独自のクラッシュ報告 SDK は組み込んでいません。
+本アプリは、アカウント登録や氏名、メールアドレス、電話番号などの入力を求めません。端末の位置情報 API から位置情報を取得せず、IMEI や広告 ID などの端末識別子も取得しません。広告、利用状況の分析・追跡を行う SDK や、本プロジェクト独自のクラッシュ報告 SDK も使用していません。
 
-本アプリは、取得したダム諸量データ、ユーザー設定およびデバッグログを開発者へ自動送信しません。ただし、ダム諸量データの取得に伴って処理される通信情報については、次節を参照してください。
+本アプリは、取得したダム諸量データ、ユーザー設定、デバッグログを開発者へ自動送信しません。データ取得時に送信先が処理する通信情報については、次節で説明します。
 
 ## ネットワーク通信
 
@@ -312,9 +333,9 @@ For questions about this Privacy Policy, please open an issue in the source code
 
 リアルタイムデータと過去データの既定の取得先はキャッシュサーバです。利用者は設定で、それぞれの取得先を国土交通省からの直接取得へ変更できます。過去データの取得では、必要に応じて国土交通省の配信元サーバと直接通信する場合があります。
 
-いずれの取得先との HTTPS 通信でも、送信先は、送信元 IP アドレス、リクエスト日時、要求の対象となるダムや期間、アプリその他の通信ソフトウェアの種類・バージョン等の標準的な通信情報を処理する場合があります。
+HTTPS 通信では、各送信先が送信元 IP アドレス、リクエスト日時、対象のダムや期間、アプリや通信ソフトウェアの種類・バージョンなどの通信情報を処理する場合があります。
 
-キャッシュサーバでは、Cloudflare がこれらの情報をサービス提供、安全確保、不正利用防止および障害調査のために処理します。本プロジェクト開発者は、広告、利用状況の分析または追跡に使用しません。
+キャッシュサーバでは、Cloudflare がこれらの情報をサービス提供、安全確保、不正利用防止、障害調査のために処理します。本プロジェクト開発者は、情報を広告、利用状況の分析、追跡に使用しません。
 
 いずれの取得先にも、氏名、メールアドレス、広告 ID、端末識別子、端末の位置情報 API から取得した位置情報、ユーザー設定、保存済みのダム諸量データまたはデバッグログを送信することはありません。
 
@@ -322,9 +343,9 @@ Cloudflare が提供するログやセキュリティ分析には標準的な通
 
 ## 端末内のデータ
 
-本アプリは、取得したリアルタイムデータと過去データ、ユーザー設定、およびトラブルシューティング用のデバッグログをアプリの保存領域に保存します。これらのデータを開発者のサーバへ自動的にアップロードしたり、独自にクラウド同期したりすることはありません。利用者が共有または書き出しを行った場合は、選択した保存先や外部アプリへデータが渡されます。
+本アプリは、取得したリアルタイムデータと過去データ、ユーザー設定、トラブルシューティング用のデバッグログをアプリの保存領域に保存します。これらを開発者のサーバへ自動送信したり、独自にクラウド同期したりすることはありません。利用者が共有または書き出しを行うと、選択した保存先や外部アプリへデータが渡ります。
 
-ユーザー設定は、Android が提供するバックアップまたは端末移行の対象となる場合があります。バックアップ、端末移行後のコピー、および利用者が共有または書き出したデータには、各サービスまたは外部アプリのプライバシーポリシーが適用され、本アプリから削除できない場合があります。
+ユーザー設定は、Android のバックアップまたは端末移行の対象となる場合があります。バックアップや端末移行後のデータ、利用者が共有・書き出したデータには、各サービスまたは外部アプリのプライバシーポリシーが適用されます。本アプリからそれらのコピーを削除できない場合があります。
 
 保存済みの過去データ検索結果とデバッグログは、アプリ内の削除機能で削除できます。日次過去データを含むすべてのローカルデータを削除するには、Android のアプリ情報画面から本アプリのストレージを消去するか、本アプリをアンインストールしてください。これらの操作では、設定を含む本アプリのデータがすべて削除されます。
 
@@ -334,14 +355,12 @@ Cloudflare が提供するログやセキュリティ分析には標準的な通
 
 ## お問い合わせ
 
-本プライバシーポリシーに関するご質問は、ソースコードリポジトリ（Codeberg）の Issue にてお問い合わせください。Issue の内容は公開されるため、氏名、メールアドレスその他の個人情報を記載しないでください。
-
-- Codeberg: https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android
+本ポリシーに関するお問い合わせは、[GitHub リポジトリの Issue](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/issues) からお寄せください。Issue は公開されるため、氏名、メールアドレスなどの個人情報を記載しないでください。
 
     """.trimIndent()
 
     val TERMS_OF_USE = """
-**Last updated: September 5, 2026**
+**Last updated: October 15, 2026**
 
 > This English version is a translation of the Japanese original version. The Japanese original is the authoritative text. If there is any discrepancy or conflict between this English translation and the Japanese original, the Japanese original prevails.
 
@@ -371,16 +390,16 @@ Displayed values, notifications, widgets, historical graphs, day-over-day change
 
 ## 4. Distribution Sources and APK Distribution
 
-The official distribution sources for the App are the Releases pages of the development repositories, **Codeberg** (primary) and **GitHub** (mirror). Built `.apk` files are distributed.
+The official distribution sources for the App are **F-Droid** and **GitHub Releases**, where signed `.apk` files are available.
 
-- Codeberg Releases: https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android/releases
+- F-Droid: https://f-droid.org/packages/net.tecogonaz.tcsameuradammonitor/
 - GitHub Releases: https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/releases
 
-The distribution of the App on app stores such as F-Droid or Google Play will be conducted at a later date, and it is not currently distributed on general app stores.
+Google Play distribution is currently being prepared for open testing.
 
-If you obtain the App from app stores such as F-Droid or Google Play in the future, the terms of use, policies, and other applicable conditions of each store govern matters relating to acquisition, distribution, updates, listing, suspension, and similar procedures. If these Terms conflict with the store's terms regarding store procedures or functions, the store's terms prevail for that scope.
+If you obtain the App from app stores such as F-Droid or Google Play, the terms of use, policies, and other applicable conditions of each store govern matters relating to acquisition, distribution, updates, listing, suspension, and similar procedures. If these Terms conflict with the store's terms regarding store procedures or functions, the store's terms prevail for that scope.
 
-The App is distributed as an executable APK file through the source code repositories above. If you obtain and install an APK from outside a general app store, the store's mechanisms for distribution, updates, review, signing, security checks, and similar functions do not apply. You are responsible for checking the source, signature, authenticity of the file, device settings (allowing installation from unknown sources), installability, and risks associated with installation.
+Executable APK files are also distributed through GitHub Releases. If you obtain and install an APK from outside a general app store, the store's mechanisms for distribution, updates, review, signing, security checks, and similar functions do not apply. You are responsible for checking the source, signature, authenticity of the file, device settings (allowing installation from unknown sources), installability, and risks associated with installation.
 
 We do not guarantee the safety, completeness, authenticity, operation, updates, or support of APKs obtained from sources other than official distribution sources, APKs modified or rebuilt by third parties, derivative versions, mirror distributions, or distributions through unofficial stores.
 
@@ -390,7 +409,7 @@ The official distribution version of the App currently does not provide paid sal
 
 The source code of the App is published under the Apache License, Version 2.0. You may use, reproduce, modify, and distribute the source code and object code in accordance with that license.
 
-The App uses multiple open source libraries under their respective licenses. Major runtime dependencies included in the Android version are described in **OSS Licenses**.
+The App uses multiple open source libraries under their respective licenses. Major runtime dependencies and third-party artwork included in the Android version are described in **OSS Licenses**. The F-Droid link icon is an adaptation of the F-Droid logo and is licensed separately under CC-BY-SA-3.0.
 
 If you distribute a modified or derivative version using the App's name, icon, screens, description, repository information, developer name, attribution notices, or similar materials, do not mislead users into believing that it is an official version, approved version, or sponsored version of MLIT or any other third party. If you distribute a modified version, comply with the Apache License, Version 2.0, applicable laws, the terms of the distribution store, and third-party rights.
 
@@ -422,7 +441,7 @@ Debug logs are recorded automatically and stored locally. Exporting or sharing t
 
 ## 8. External Services and Links
 
-The App may link to, launch, or share content with external services or external apps, including MLIT-related pages, map apps, browsers, OS sharing features, Codeberg, and GitHub.
+The App may link to, launch, or share content with external services or external apps, including MLIT-related pages, map apps, browsers, OS sharing features, and GitHub.
 
 Use of external services or external apps is subject to the terms, privacy policies, and usage conditions of each provider. We are not responsible for the content, availability, accuracy, safety, changes, suspension, or results of use of external services or external apps.
 
@@ -433,7 +452,7 @@ You must use the App in compliance with applicable laws, these Terms, the terms 
 You must not engage in the following acts.
 
 - Acts that violate laws, public order and morals, third-party rights, these Terms, or the terms of distribution sources
-- Acts that impose excessive load, cause failures, perform unauthorized access, or interfere with the App, MLIT public servers, the cache server, Codeberg, GitHub, external services, third-party devices, or networks
+- Acts that impose excessive load, cause failures, perform unauthorized access, or interfere with the App, MLIT public servers, the cache server, GitHub, external services, third-party devices, or networks
 - Acts that mislead users into believing that the App or a modified version is an official version, approved version, or sponsored version of MLIT or any other third party
 - Acts of using or distributing the App or a modified version for malware, unauthorized code, phishing, fraud, impersonation, false display, misleading display, or deception of users
 - Acts of presenting displayed data from the App as if it were official information and causing third parties to make incorrect important decisions
@@ -443,7 +462,7 @@ You must not engage in the following acts.
 
 We may change the App's features, specifications, displays, supported OS versions, supported devices, distribution methods, distribution sources, repositories, documentation, Privacy Policy, or these Terms as necessary.
 
-We may suspend or terminate distribution, updates, provision, or support of the App due to changes in MLIT public data specifications, suspension of external services, changes in policies or terms of distribution platforms such as Codeberg/GitHub, changes in F-Droid or other store policies, security reasons, maintenance, legal requirements, or other unavoidable circumstances.
+We may suspend or terminate distribution, updates, provision, or support of the App due to changes in MLIT public data specifications, suspension of external services, changes in policies or terms of distribution platforms such as GitHub, changes in F-Droid or other store policies, security reasons, maintenance, legal requirements, or other unavoidable circumstances.
 
 If these Terms are changed, the revised Terms take effect when published in the repository, in the App, on a distribution page, or by another method we deem appropriate. If you use the App after the change, you are deemed to have agreed to the revised Terms.
 
@@ -471,20 +490,20 @@ If a dispute arises between us and a user in connection with these Terms or the 
 
 ## 15. Contact
 
-As a general rule, inquiries regarding these Terms, the App, the Privacy Policy, or licenses should be made through Issues in the source code repository (Codeberg).
+As a general rule, inquiries regarding these Terms, the App, the Privacy Policy, or licenses should be submitted through [Issues in the GitHub repository](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/issues).
 
-- Codeberg: https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android
+Issues are public. Do not include personal or confidential information.
 
 We do not guarantee individual responses, investigations, fixes, updates, or support for all inquiries.
 
     """.trimIndent()
 
     val TERMS_OF_USE_JA = """
-**最終更新日: 2026-09-05**
+**最終更新日: 2026-10-15**
 
 ## 1. 適用
 
-本利用規約（以下「本規約」）は、**早明浦ダム 貯水率モニタ**(以下「本アプリ」)の利用条件を定めるものです。
+本利用規約（以下「本規約」）は、**早明浦ダム 貯水率モニタ**（以下「本アプリ」）の利用条件を定めます。
 
 利用者は、本アプリをインストール、起動、利用、または公式配布元から取得した時点で、本規約に同意したものとみなされます。本規約に同意しない場合は、本アプリを利用しないでください。
 
@@ -508,16 +527,16 @@ We do not guarantee individual responses, investigations, fixes, updates, or sup
 
 ## 4. 配布元とAPK配布
 
-本アプリの公式配布元は、開発用リポジトリである **Codeberg**（メイン）および **GitHub**（ミラー）の Releases ページであり、ビルド済みの `.apk` ファイルが配布されます。
+本アプリの公式配布元は、F-DroidとGitHub Releasesです。署名済みの `.apk` ファイルを配布しています。
 
-- Codeberg Releases: https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android/releases
+- F-Droid: https://f-droid.org/ja/packages/net.tecogonaz.tcsameuradammonitor/
 - GitHub Releases: https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/releases
 
-F-Droid や Google Play 等のアプリストアでの公開は後日別途実施する予定であり、現時点では一般的なアプリストアでの配布は行われていません。
+Google Playでは、公開テストへの移行を準備しています。
 
-将来的に F-Droid や Google Play 等から本アプリを取得するようになる場合、各ストアの利用規約、ポリシー、その他適用される条件が、取得、配布、更新、掲載、停止等の手続きに適用されます。本規約と各ストアの条件が手続きまたは機能に関して矛盾する場合、その範囲ではストアの条件が優先されます。
+F-DroidやGoogle Play等のアプリストアから本アプリを取得する場合、各ストアの利用規約、ポリシー、その他適用される条件が、取得、配布、更新、掲載、停止等の手続きに適用されます。本規約と各ストアの条件が手続きまたは機能に関して矛盾する場合、その範囲ではストアの条件が優先されます。
 
-本アプリは、上記ソースコードリポジトリ上でAPK形式の実行ファイルとして配布されます。一般的なアプリストア以外からAPKを入手してインストールする場合、ストアによる配布、更新、審査、署名、セキュリティ確認等の仕組みが適用されません。利用者は、入手元、署名、ファイルの真正性、端末設定（提供元不明のアプリの許可）、インストールの可否、およびインストールに伴うリスクを自ら確認してください。
+GitHub ReleasesでもAPK形式の実行ファイルを配布します。一般的なアプリストア以外からAPKを入手してインストールする場合、ストアによる配布、更新、審査、署名、セキュリティ確認等の仕組みが適用されません。利用者は、入手元、署名、ファイルの真正性、端末設定（提供元不明のアプリの許可）、インストールの可否、およびインストールに伴うリスクを自ら確認してください。
 
 公式配布元以外から入手したAPK、第三者が改変または再ビルドしたAPK、派生版、ミラー配布物、非公式ストア上の配布物について、当方はその安全性、完全性、真正性、動作、更新、サポートを保証しません。
 
@@ -527,7 +546,7 @@ F-Droid や Google Play 等のアプリストアでの公開は後日別途実�
 
 本アプリのソースコードは、Apache License, Version 2.0 に基づき公開されています。利用者は、同ライセンスに従い、ソースコードおよびオブジェクトコードを利用、複製、改変、配布することができます。
 
-本アプリは、複数のオープンソースライブラリをそれぞれのライセンスに基づいて使用しています。Android版に含まれる主な実行時依存ライブラリは、**本アプリのOSSライセンス** に記載されています。
+本アプリは、複数のオープンソースライブラリをそれぞれのライセンスに基づいて使用しています。Android版に含まれる主な実行時依存ライブラリと第三者の画像素材は、**本アプリのOSSライセンス** に記載されています。F-DroidリンクのアイコンはF-Droidロゴを加工したものであり、CC BY-SA 3.0を適用します。
 
 本アプリの名称、アイコン、画面、説明、リポジトリ情報、開発者名、出典表記その他の表示を利用して改変版または派生版を配布する場合、国土交通省、または第三者の公式版、承認版、後援版であると誤認させないようにしてください。改変版を配布する場合は、Apache License, Version 2.0 の条件、適用法令、配布先ストアの規約、および第三者の権利を遵守してください。
 
@@ -559,7 +578,7 @@ F-Droid や Google Play 等のアプリストアでの公開は後日別途実�
 
 ## 8. 外部サービスとリンク
 
-本アプリは、国土交通省関連ページ、地図アプリ、ブラウザ、OSの共有機能、Codeberg、GitHub等の外部サービスまたは外部アプリへのリンク、起動、共有を行う場合があります。
+本アプリは、国土交通省関連ページ、地図アプリ、ブラウザ、OSの共有機能、GitHub等の外部サービスまたは外部アプリへのリンク、起動、共有を行う場合があります。
 
 外部サービスまたは外部アプリの利用には、各提供者の規約、プライバシーポリシー、利用条件が適用されます。当方は、外部サービスまたは外部アプリの内容、可用性、正確性、安全性、変更、停止、利用結果について責任を負いません。
 
@@ -570,7 +589,7 @@ F-Droid や Google Play 等のアプリストアでの公開は後日別途実�
 利用者は、次の行為を行ってはなりません。
 
 - 法令、公序良俗、第三者の権利、本規約、配布元の規約に違反する行為
-- 本アプリ、国土交通省の公開サーバ、キャッシュサーバ、Codeberg、GitHub、外部サービス、第三者の端末またはネットワークに過度の負荷、障害、不正アクセス、妨害を与える行為
+- 本アプリ、国土交通省の公開サーバ、キャッシュサーバ、GitHub、外部サービス、第三者の端末またはネットワークに過度の負荷、障害、不正アクセス、妨害を与える行為
 - 本アプリまたは改変版を、国土交通省、またはその他第三者の公式版、承認版、後援版であると誤認させる行為
 - マルウェア、不正コード、フィッシング、詐欺、なりすまし、虚偽表示、誤認表示、利用者を欺く目的で本アプリまたは改変版を利用または配布する行為
 - 本アプリの表示データを、公式情報であるかのように提示し、第三者の重要判断を誤らせる行為
@@ -580,7 +599,7 @@ F-Droid や Google Play 等のアプリストアでの公開は後日別途実�
 
 当方は、必要に応じて、本アプリの機能、仕様、表示、対応OS、対応端末、配布方法、配布元、リポジトリ、ドキュメント、プライバシーポリシー、本規約を変更することがあります。
 
-当方は、国土交通省の公開データ仕様の変更、外部サービスの停止、本アプリを配布する Codeberg/GitHub 等のプラットフォームの規約・ポリシー変更、F-Droid 等のポリシー変更、セキュリティ上の理由、保守、法令上の要請、その他やむを得ない事情により、本アプリの配布、更新、提供、サポートを中断または終了することがあります。
+当方は、国土交通省の公開データ仕様の変更、外部サービスの停止、GitHub 等の配布プラットフォームの規約・ポリシー変更、F-Droid 等のポリシー変更、セキュリティ上の理由、保守、法令上の要請、その他やむを得ない事情により、本アプリの配布、更新、提供、サポートを中断または終了することがあります。
 
 本規約を変更した場合、変更後の規約は、リポジトリ、アプリ内表示、配布ページ、または当方が適切と判断する方法で公開した時点から効力を生じます。変更後に本アプリを利用した場合、利用者は変更後の規約に同意したものとみなされます。
 
@@ -608,9 +627,7 @@ F-Droid や Google Play 等のアプリストアでの公開は後日別途実�
 
 ## 15. お問い合わせ
 
-本規約、本アプリ、プライバシーポリシー、ライセンスに関するお問い合わせは、原則としてソースコードリポジトリ(Codeberg)のIssueにて行ってください。
-
-- Codeberg: https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android
+本規約、本アプリ、プライバシーポリシー、ライセンスに関するお問い合わせは、[GitHub リポジトリの Issue](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/issues) からお寄せください。Issue は公開されるため、個人情報や機密情報を記載しないでください。
 
 当方は、すべてのお問い合わせへの個別回答、調査、修正、更新、サポート提供を保証しません。
 

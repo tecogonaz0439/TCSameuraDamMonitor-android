@@ -124,6 +124,23 @@ class SudmonitorHistoryDaoAndroidTest {
     }
 
     @Test
+    fun findLatestObservation_returnsNewestRowByTimeEpochMs() = runTest {
+        dao.upsertHistory(historyRow(damId = DAM_A))
+        dao.insertObservations(
+            listOf(
+                observation(damId = DAM_A, rowNo = 0, time = "2026/08/01 01:00", millis = 1_000L),
+                observation(damId = DAM_A, rowNo = 1, time = "2026/08/01 03:00", millis = 3_000L),
+                observation(damId = DAM_A, rowNo = 2, time = "2026/08/01 02:00", millis = 2_000L)
+            )
+        )
+
+        // rowNo 順ではなく timeEpochMs 降順の先頭1件（自動収集ゲートの判定行）を返す
+        assertEquals(3_000L, dao.findLatestObservation(DAM_A)!!.timeEpochMs)
+        // 他ダム・観測行が無いダムは null
+        assertNull(dao.findLatestObservation(DAM_B))
+    }
+
+    @Test
     fun deleteAll_removesRowsAndObservations() = runTest {
         dao.upsertHistory(historyRow(damId = DAM_A))
         dao.insertObservations(listOf(observation(damId = DAM_A, rowNo = 0, time = "2026/08/01 01:00", millis = 1_000L)))

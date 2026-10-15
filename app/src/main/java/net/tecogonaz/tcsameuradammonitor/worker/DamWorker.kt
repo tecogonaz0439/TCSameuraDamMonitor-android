@@ -266,7 +266,6 @@ class DamWorker @AssistedInject constructor(
         runCatching {
             val settings = settingsRepository.appSettingsFlow.first()
             sudmonitorHistoryRepository.autoFetch(
-                interval = settings.autoUpdateInterval,
                 now = System.currentTimeMillis(),
                 damId = settings.targetDamId
             )

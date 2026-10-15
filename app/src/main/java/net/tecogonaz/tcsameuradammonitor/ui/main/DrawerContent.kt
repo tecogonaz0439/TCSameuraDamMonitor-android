@@ -282,6 +282,8 @@ internal fun DrawerContent(
     onSwitchToHistoricalMode: (Long) -> Unit,
     isDailyHistoryEnabled: Boolean,
     sudmonitorHistory: SudmonitorHistory?,
+    sudmonitorHistoryFirstValidRatePct: Float?,
+    sudmonitorHistoryLastValidRatePct: Float?,
     isSudmonitorHistoryMode: Boolean,
     onSwitchToSudmonitorHistoryMode: () -> Unit,
     lastFetchDateStr: String,
@@ -460,8 +462,10 @@ internal fun DrawerContent(
             }
             val dailyLine3 = if (sudmonitorHistory != null) {
                 run {
-                    val startPct = sudmonitorHistory.firstStorageRatePct
-                    val endPct = sudmonitorHistory.lastStorageRatePct
+                    // 最新行（当日 00:00）が欠測でも、期間内の最初/最後の有効値で推移を表示する。
+                    // 有効値が1つも無い場合のみ欠測プレースホルダーを表示する（min/max は従来どおり）。
+                    val startPct = sudmonitorHistoryFirstValidRatePct
+                    val endPct = sudmonitorHistoryLastValidRatePct
                     val minPct = sudmonitorHistory.minStorageRatePct
                     val maxPct = sudmonitorHistory.maxStorageRatePct
                     if (startPct != null && endPct != null) {

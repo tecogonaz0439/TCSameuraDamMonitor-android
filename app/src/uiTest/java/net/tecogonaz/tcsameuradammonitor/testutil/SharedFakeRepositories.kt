@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import net.tecogonaz.tcsameuradammonitor.domain.model.AppSettings
-import net.tecogonaz.tcsameuradammonitor.domain.model.AutoUpdateInterval
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamConfig
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamData
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamHistoricalData
@@ -431,7 +430,7 @@ open class SharedFakeSudmonitorHistoryRepository : SudmonitorHistoryRepository {
     var fetchResult: Either<Throwable, SudmonitorHistoryFetchResult> =
         Either.Right(SudmonitorHistoryFetchResult.NotStored)
     val fetchAndStoreCalls = mutableListOf<Triple<String, DamConfig, SudmonitorHistoryTrigger>>()
-    val autoFetchCalls = mutableListOf<Triple<AutoUpdateInterval, Long, String>>()
+    val autoFetchCalls = mutableListOf<Pair<Long, String>>()
 
     var history: SudmonitorHistory?
         get() = historyByDamId.value.values.firstOrNull()
@@ -471,10 +470,10 @@ open class SharedFakeSudmonitorHistoryRepository : SudmonitorHistoryRepository {
         historyByDamId.map { it[damId] }
 
     override suspend fun manualRefreshAvailableAt(damId: String): Long? =
-        historyByDamId.value[damId]?.nextUpdateAtEpochMs
+        historyByDamId.value[damId]?.let { it.fetchedAtEpochMs + 60 * 60 * 1000L }
 
-    override suspend fun autoFetch(interval: AutoUpdateInterval, now: Long, damId: String) {
-        autoFetchCalls += Triple(interval, now, damId)
+    override suspend fun autoFetch(now: Long, damId: String) {
+        autoFetchCalls += now to damId
     }
 
     override suspend fun getAllObservations(damId: String): List<DamHistoricalData> = observations

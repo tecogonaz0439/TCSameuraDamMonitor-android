@@ -2,9 +2,9 @@
 
 # 早明浦ダム 貯水率モニタ
 
-**早明浦ダム 貯水率モニタ**は、国土交通省の水文水質データベースで公開されるダム諸量データを取得し、早明浦ダムを含む日本国内 125 ダムの貯水率、および関連データを表示するAndroidアプリです。現在、Android 版アプリを Codeberg/GitHub の Releases ページで直接配布（ビルド済み APK ファイル形式）しており、F-Droid や Google Play 等については後日公開予定です。
+**早明浦ダム 貯水率モニタ**は、国土交通省の水文水質データベースからダム諸量データを取得し、早明浦ダムを含む国内 125 ダムの貯水率と関連データを表示する Android アプリです。F-Droid と GitHub Releases で配布しています。Google Play では公開テストへの移行を準備しています。
 
-本アプリは、早明浦ダムの貯水率を心配するうどん県民(香川県民)向けに最適化されています。
+本アプリは、早明浦ダムの貯水率を心配するうどん県民（香川県民）向けに最適化されています。
 
 **本アプリは、国土交通省を含む政府機関、またはその他の第三者が提供・承認する公式アプリではありません。**
 
@@ -20,7 +20,9 @@
 
 ## 入手方法
 
-1. リポジトリの [Releases](https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android/releases) ページに添付された最新の署名済み APK をダウンロードします。
+[F-Droid](https://f-droid.org/ja/packages/net.tecogonaz.tcsameuradammonitor/) からインストールするか、GitHub Releases からAPKをダウンロードしてください。
+
+1. [GitHub Releases](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/releases) から最新の署名済み APK をダウンロードします。
 2. ダウンロードした APK ファイルを開いてインストールします。
    - インストール時にセキュリティ警告（「提供元不明のアプリ」）が表示される場合は、端末の設定からこのファイルのインストールを許可してください。
 
@@ -37,10 +39,9 @@
 
 ## リポジトリ
 
-- **Codeberg** : [tecogonaz0439/TCSameuraDamMonitor-android](https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android)
-- **GitHub** : [tecogonaz0439/TCSameuraDamMonitor-android](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android)
+- **GitHub**: [tecogonaz0439/TCSameuraDamMonitor-android](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android)
 
-GitHubはCodebergのミラーであり、**読み取り専用**です。IssueおよびPull RequestはCodebergでのみ受け付けています。
+不具合の報告や提案は、GitHub の Issue からお寄せください。Pull Request も同リポジトリで受け付けています。
 
 ## リンク
 
@@ -52,3 +53,5 @@ GitHubはCodebergのミラーであり、**読み取り専用**です。Issueお
 ## ライセンス
 
 ソースコードは [Apache License, Version 2.0](LICENSE) の下で公開されています。
+
+F-Droidリンクのアイコンは、CC BY-SA 3.0のF-Droidロゴを加工したものです。[素材の帰属と加工内容](artwork/fdroid/README.md)を参照してください。

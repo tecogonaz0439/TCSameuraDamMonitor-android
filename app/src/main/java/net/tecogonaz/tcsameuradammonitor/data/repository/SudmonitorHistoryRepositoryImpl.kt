@@ -14,7 +14,6 @@ import net.tecogonaz.tcsameuradammonitor.data.source.local.room.SudmonitorHistor
 import net.tecogonaz.tcsameuradammonitor.data.source.local.room.toDomain
 import net.tecogonaz.tcsameuradammonitor.data.source.remote.DamFileParser
 import net.tecogonaz.tcsameuradammonitor.data.source.remote.SudmonitorHistoricalClient
-import net.tecogonaz.tcsameuradammonitor.domain.model.AutoUpdateInterval
 import net.tecogonaz.tcsameuradammonitor.domain.model.DebugDatSelectionMode
 import net.tecogonaz.tcsameuradammonitor.domain.model.DebugSimulateMode
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamConfig
@@ -26,6 +25,7 @@ import net.tecogonaz.tcsameuradammonitor.domain.repository.SettingsRepository
 import net.tecogonaz.tcsameuradammonitor.domain.repository.SudmonitorHistoryFetchResult
 import net.tecogonaz.tcsameuradammonitor.domain.repository.SudmonitorHistoryRepository
 import net.tecogonaz.tcsameuradammonitor.domain.repository.SudmonitorHistoryTrigger
+import net.tecogonaz.tcsameuradammonitor.util.HistoryHeaderTime
 import net.tecogonaz.tcsameuradammonitor.util.TimeUtils
 import net.tecogonaz.tcsameuradammonitor.util.catchNonCancellationSuspend
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -39,8 +39,6 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.time.Instant
-import java.time.LocalTime
-import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -233,34 +231,46 @@ class SudmonitorHistoryRepositoryImpl(
     override suspend fun manualRefreshAvailableAt(damId: String): Long? =
         catchNonCancellationSuspend {
             val settings = settingsRepository.appSettingsFlow.first()
-            if (settings.debugModeEnabled) null else sudmonitorHistoryDao.findByDamId(damId)?.nextUpdateAtEpochMs
+            if (settings.debugModeEnabled) {
+                null
+            } else {
+                sudmonitorHistoryDao.findByDamId(damId)
+                    ?.let { it.fetchedAtEpochMs + MANUAL_REFRESH_COOLDOWN_MILLIS }
+            }
         }.getOrNull()
 
     /**
      * 既存の自動更新スケジューラへの連動（D7）。
      *
-     * 間隔 1時間/12時間 は保存済み [SudmonitorHistory.nextUpdateAtEpochMs] が未来ならスキップし
-     * （最大1日1回）、1日/7日 は毎回実行します。行未保存時はクールダウン判定なしで実行し、
-     * 並列実行は [fetchMutex] の in-flight dedup で抑止されます。失敗は握りつぶします（ログのみ）。
+     * 最新の観測行が「当日 00:00 JST（前日 `24:00` 表記の正規化値）」かつ貯水率が有効な場合は、
+     * 当日分は取得済みとみなしてスキップします。それ以外（行未保存 / 最終行が当日 00:00 でない /
+     * 貯水率欠測 / 判定不能）は [fetchAndStore]（`AUTO`）を実行します。Debug ON 時はゲート判定を
+     * 行わず常に実行します（Debug DAT 読込経路）。失敗は握りつぶします（ログのみ）。
      */
-    override suspend fun autoFetch(interval: AutoUpdateInterval, now: Long, damId: String) {
+    override suspend fun autoFetch(now: Long, damId: String) {
         val settings = catchNonCancellationSuspend {
             settingsRepository.appSettingsFlow.first()
         }.getOrNull() ?: return
         if (settings.historicalDataSource != RealtimeDataSource.SUDMONITOR) {
             return
         }
-        val existing = catchNonCancellationSuspend {
-            sudmonitorHistoryDao.findByDamId(damId)
-        }.getOrNull()
-        if (!settings.debugModeEnabled &&
-            (interval == AutoUpdateInterval.ONE_HOUR || interval == AutoUpdateInterval.TWELVE_HOURS)
-        ) {
-            val nextUpdateAtEpochMs = existing?.nextUpdateAtEpochMs
-            if (nextUpdateAtEpochMs != null && nextUpdateAtEpochMs > now) {
+        if (!settings.debugModeEnabled) {
+            val latest = catchNonCancellationSuspend {
+                sudmonitorHistoryDao.findLatestObservation(damId)
+            }.getOrNull()
+            val todayStartEpochMs = Instant.ofEpochMilli(now)
+                .atZone(TimeUtils.JST_ZONE)
+                .toLocalDate()
+                .atStartOfDay(TimeUtils.JST_ZONE)
+                .toInstant()
+                .toEpochMilli()
+            if (latest != null &&
+                latest.timeEpochMs == todayStartEpochMs &&
+                latest.storageRatePct != null
+            ) {
                 Log.d(
                     LOG_TAG,
-                    "Auto fetch skipped (cooldown): damId=$damId nextUpdateAtEpochMs=$nextUpdateAtEpochMs"
+                    "Auto fetch skipped (daily data is current): damId=$damId timeEpochMs=${latest.timeEpochMs}"
                 )
                 return
             }
@@ -403,11 +413,9 @@ class SudmonitorHistoryRepositoryImpl(
      * @return カバレッジ（開始日・終了日とJST日単位のepochミリ秒）、ヘッダ欠落・非パース・期間異常の場合は null
      */
     private fun resolveCoverage(sinceHeader: String?, untilHeader: String?): Coverage? {
-        val since = sinceHeader?.let { runCatching { OffsetDateTime.parse(it) }.getOrNull() } ?: return null
-        val until = untilHeader?.let { runCatching { OffsetDateTime.parse(it) }.getOrNull() } ?: return null
-        val startDay = since.atZoneSameInstant(TimeUtils.JST_ZONE).toLocalDate()
-        val untilDay = until.atZoneSameInstant(TimeUtils.JST_ZONE).toLocalDate()
-        val endDay = if (until.toLocalTime() == LocalTime.MIDNIGHT) untilDay.minusDays(1) else untilDay
+        val range = HistoryHeaderTime.rollingCoverage(sinceHeader, untilHeader) ?: return null
+        val startDay = range.start
+        val endDay = range.end
         if (endDay.isBefore(startDay)) return null
         return Coverage(
             startDate = startDay.format(DateTimeFormatter.BASIC_ISO_DATE),
@@ -497,5 +505,6 @@ class SudmonitorHistoryRepositoryImpl(
         private const val DEBUG_HISTORICAL_DAILY_ROW_COUNT = 744
         private const val NEXT_UPDATE_FALLBACK_HOUR = 0
         private const val NEXT_UPDATE_FALLBACK_MINUTE = 13
+        private const val MANUAL_REFRESH_COOLDOWN_MILLIS = 60 * 60 * 1000L
     }
 }

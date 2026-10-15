@@ -1,6 +1,6 @@
 # Open Source Licenses — Android
 
-This document lists third-party software contained in the Android release artifact.
+This document lists third-party software and artwork contained in the Android release artifact.
 Artifacts from the same upstream open-source project are grouped together.
 
 *Report generated on 2026-09-05*
@@ -21,6 +21,7 @@ Artifacts from the same upstream open-source project are grouped together.
 | Okio | https://github.com/square/okio | Apache-2.0 |
 | SLF4J | https://github.com/qos-ch/slf4j | MIT |
 | javax.inject | https://github.com/javax-inject/javax-inject | Apache-2.0 |
+| F-Droid Artwork | https://gitlab.com/fdroid/artwork | CC-BY-SA-3.0 |
 
 ## AndroidX / Jetpack Libraries
 
@@ -243,4 +244,28 @@ You may obtain a copy of the License at
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+```
+
+## F-Droid Artwork
+
+- Repository: https://gitlab.com/fdroid/artwork
+- License: CC-BY-SA-3.0
+
+```text
+Copyright 2012 William Theaker
+Copyright 2013 Robert Martinez
+Copyright 2015 Andrew Nayenko <relan@airpost.net>
+Copyright 2026 tecogonaz (monochrome adaptation)
+
+F-Droid logo (2015), used under Creative Commons Attribution-ShareAlike 3.0 Unported.
+License: https://creativecommons.org/licenses/by-sa/3.0/
+Source: https://gitlab.com/fdroid/artwork/-/blob/master/fdroid-logo-2015/fdroid-logo.svg
+Changes: monochrome silhouette, transparent details, removal of shading.
+The adapted icon is also licensed under CC-BY-SA-3.0.
+This use does not imply endorsement by F-Droid.
+
+F-Droidロゴ（2015年版）をCC BY-SA 3.0で利用しています。
+単色化し、陰影を除去し、目・リング・中央記号を透過に加工しました。
+加工後のアイコンにもCC BY-SA 3.0を適用します。
+F-Droidとの提携や推奨を示すものではありません。
 ```

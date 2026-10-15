@@ -6,7 +6,6 @@ package net.tecogonaz.tcsameuradammonitor.domain.repository
 import arrow.core.Either
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import net.tecogonaz.tcsameuradammonitor.domain.model.AutoUpdateInterval
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamConfig
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamHistoricalData
 import net.tecogonaz.tcsameuradammonitor.domain.model.SudmonitorHistory
@@ -63,29 +62,34 @@ interface SudmonitorHistoryRepository {
     fun historyFlow(damId: String): Flow<SudmonitorHistory?> = flow { emit(findByDamId(damId)) }
 
     /**
-     * 対象ダムの手動更新クールダウン終了時刻（保存済み [SudmonitorHistory.nextUpdateAtEpochMs]）を取得します。
+     * 対象ダムの手動更新クールダウン終了時刻を取得します。
      *
-     * 行未保存・取得前は null（= いつでも手動更新可）を返します。
+     * 日次過去データは毎時条件付き収集へ変更されたため、次回更新予定時刻
+     * （[SudmonitorHistory.nextUpdateAtEpochMs]）ではなく、自動取得でも更新される最終成功取得時刻
+     * （[SudmonitorHistory.fetchedAtEpochMs]）+ 1時間をクールダウン終了時刻として返します。
+     * 行未保存・取得前は null（= いつでも手動更新可）を返します。Debug ON 時はゲートを迂回するため
+     * 常に null（= いつでも手動更新可）を返します。
      *
      * @param damId 対象ダムの観測所ID
-     * @return クールダウン終了時刻のミリ秒、未保存の場合は null
+     * @return クールダウン終了時刻のミリ秒、未保存・Debug ON 時は null
      */
     suspend fun manualRefreshAvailableAt(damId: String): Long?
 
     /**
      * 既存の自動更新スケジューラ（WorkManager の periodic work）から呼び出される定期自動取得（D7）。
      *
-     * 間隔 [AutoUpdateInterval.ONE_HOUR] / [AutoUpdateInterval.TWELVE_HOURS] の場合は、保存済み
-     * [SudmonitorHistory.nextUpdateAtEpochMs] が未来ならスキップし（結果的に最大1日1回）、明けた時のみ実行します。
-     * [AutoUpdateInterval.ONE_DAY] / [AutoUpdateInterval.ONE_WEEK] は設定どおり毎回実行します。
-     * 機能ゲート無効時は何もしません。行未保存時はクールダウン判定なしで実行します。
-     * 実行失敗は握りつぶします（ログのみ）。並列実行は in-flight dedup で抑止されます。
+     * リアルタイムと同じ AUTO 間隔で毎回判定し、最新の観測行が「当日 00:00 JST（前日 `24:00` 表記の
+     * 正規化値）」かつ貯水率が有効な場合のみ、当日分は取得済みとみなしてスキップします
+     * （suduploder の毎時 :12 収集が欠測を引いた場合も、次時間に再取得される）。
+     * それ以外（行未保存 / 最終行が当日 00:00 でない / 貯水率欠測 / 判定不能）は実行します。
+     * Debug ON 時はゲート判定を行わず常に実行します（Debug DAT 読込経路）。
+     * 機能ゲート無効時は何もしません。実行失敗は握りつぶします（ログのみ）。
+     * 並列実行は in-flight dedup で抑止されます。
      *
-     * @param interval 自動更新の設定間隔
      * @param now 判定基準時刻（現在時刻）
      * @param damId 対象ダムの観測所ID
      */
-    suspend fun autoFetch(interval: AutoUpdateInterval, now: Long, damId: String)
+    suspend fun autoFetch(now: Long, damId: String)
 
     /**
      * 対象ダムの観測明細行を時刻昇順で全件取得します。

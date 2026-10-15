@@ -1,0 +1,5 @@
+Improved daily history retrieval, manual refresh timing, and storage rate display.
+Improved parsing of 24:00 historical data headers.
+Added an F-Droid link and simplified the About version display.
+Included Sameura Dam historical data for September 2026.
+Consolidated repository links on GitHub.

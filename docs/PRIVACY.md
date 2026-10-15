@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last updated: September 5, 2026**
+**Last updated: September 24, 2026**
 
 > This English version is a translation of the Japanese original `PRIVACY-ja.md`. The Japanese original is the authoritative text. If there is any discrepancy or conflict between this English translation and the Japanese original, the Japanese original prevails.
 
@@ -43,6 +43,4 @@ This Privacy Policy may be updated to reflect changes to the App, the services i
 
 ## Contact
 
-For questions about this Privacy Policy, please open an issue in the source code repository on Codeberg. Issues are public, so do not include your name, email address, or any other personal information.
-
-- Codeberg: https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android
+For questions about this Privacy Policy, use [Issues in the GitHub repository](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/issues). Issues are public, so do not include your name, email address, or other personal information.

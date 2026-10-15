@@ -17,10 +17,12 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.unmockkStatic
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import net.tecogonaz.tcsameuradammonitor.R
 import net.tecogonaz.tcsameuradammonitor.domain.model.AppSettings
 import net.tecogonaz.tcsameuradammonitor.domain.model.AutoUpdateInterval
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamConfig
@@ -712,6 +714,111 @@ class MainViewModelTest {
 
         assertEquals(sudmonitorHistory(), fixture.viewModel.uiState.value.sudmonitorHistory)
     }
+
+    @Test
+    fun dailyHistory_validRateFallback_usesFirstAndLastValidObservations() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            val fixture = createViewModel(
+                settings = stableSettings(),
+                initialData = null,
+                sudmonitorHistoryRow = sudmonitorHistory().copy(
+                    firstStorageRatePct = null,
+                    lastStorageRatePct = null
+                ),
+                sudmonitorHistoryObservations = listOf(
+                    historicalData("2026/08/01 01:00", null),
+                    historicalData("2026/08/01 02:00", 78.5f),
+                    historicalData("2026/08/01 03:00", null),
+                    historicalData("2026/08/01 04:00", 82.25f),
+                    historicalData("2026/08/01 05:00", null)
+                )
+            )
+            advanceUntilIdle()
+            fixture.viewModel.switchToSudmonitorHistoryMode()
+            advanceUntilIdle()
+
+            // 当日00:00（期間末尾）が欠測でも、期間内の最初/最後の有効値で貯水率推移を表示する
+            val state = fixture.viewModel.uiState.value
+            assertEquals(78.5f, state.sudmonitorHistoryFirstValidRatePct!!, 0.001f)
+            assertEquals(82.25f, state.sudmonitorHistoryLastValidRatePct!!, 0.001f)
+        }
+
+    @Test
+    fun dailyHistory_noValidRate_returnsNullFallbackValues() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            val fixture = createViewModel(
+                settings = stableSettings(),
+                initialData = null,
+                sudmonitorHistoryRow = sudmonitorHistory().copy(
+                    firstStorageRatePct = null,
+                    lastStorageRatePct = null
+                ),
+                sudmonitorHistoryObservations = listOf(
+                    historicalData("2026/08/01 01:00", null),
+                    historicalData("2026/08/01 02:00", null)
+                )
+            )
+            advanceUntilIdle()
+            fixture.viewModel.switchToSudmonitorHistoryMode()
+            advanceUntilIdle()
+
+            // 有効値が1つも無い場合だけ欠測（-- %）表示になる
+            val state = fixture.viewModel.uiState.value
+            assertNull(state.sudmonitorHistoryFirstValidRatePct)
+            assertNull(state.sudmonitorHistoryLastValidRatePct)
+        }
+
+    @Test
+    fun dailyHistory_rowEmissionInRealtimeMode_populatesValidRateFallbackForSidebar() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            val fixture = createViewModel(
+                settings = stableSettings(),
+                initialData = null,
+                sudmonitorHistoryRow = sudmonitorHistory().copy(
+                    firstStorageRatePct = null,
+                    lastStorageRatePct = null
+                ),
+                sudmonitorHistoryObservations = listOf(
+                    historicalData("2026/08/01 01:00", null),
+                    historicalData("2026/08/01 02:00", 78.5f),
+                    historicalData("2026/08/01 03:00", null),
+                    historicalData("2026/08/01 04:00", 82.25f),
+                    historicalData("2026/08/01 05:00", null)
+                )
+            )
+            advanceUntilIdle()
+
+            // サイドバー常設エントリはリアルタイム表示中も出るため、日次モードへ入らなくても
+            // 全観測行の最初/最後の有効値が派生できること（最新行欠測時も `-- %` にしない）
+            val state = fixture.viewModel.uiState.value
+            assertFalse(state.isSudmonitorHistoryMode)
+            assertEquals(78.5f, state.sudmonitorHistoryFirstValidRatePct!!, 0.001f)
+            assertEquals(82.25f, state.sudmonitorHistoryLastValidRatePct!!, 0.001f)
+        }
+
+    @Test
+    fun showSudmonitorHistoryAutoUpdateStatus_usesConfiguredInterval() =
+        runTest(mainDispatcherRule.testDispatcher) {
+            val fixture = createViewModel(
+                settings = stableSettings().copy(
+                    autoUpdateEnabled = true,
+                    autoUpdateInterval = AutoUpdateInterval.TWELVE_HOURS
+                ),
+                initialData = null,
+                sudmonitorHistoryRow = sudmonitorHistory()
+            )
+            advanceUntilIdle()
+
+            fixture.viewModel.snackbarMessage.test {
+                fixture.viewModel.showSudmonitorHistoryAutoUpdateStatus()
+                advanceUntilIdle()
+
+                // クールダウン考慮の実効間隔（1日）ではなく、実際の設定間隔（12時間）を表示する
+                verify { context.getString(R.string.settings_general_auto_update_interval_12_hours) }
+                assertEquals("string-${R.string.main_autorenew_enabled_with_last}", awaitItem())
+                cancelAndIgnoreRemainingEvents()
+            }
+        }
 
     @Test
     fun dailyHistory_flowEmission_reloadsDisplayWhenInDailyMode() = runTest(mainDispatcherRule.testDispatcher) {
@@ -1995,6 +2102,16 @@ class MainViewModelTest {
                 outflow = 9.0f + index
             )
         }
+
+    /** 貯水率の欠測（null）を含む日次過去データ行を組み立てる。 */
+    private fun historicalData(time: String, storagePercentage: Float?): DamHistoricalData =
+        DamHistoricalData(
+            time = time,
+            storagePercentage = storagePercentage,
+            storageVolume = 100_000f,
+            inflow = 10f,
+            outflow = 9f
+        )
 
     private fun sudmonitorHistory(damId: String = TEST_DAM_ID): SudmonitorHistory =
         SudmonitorHistory(

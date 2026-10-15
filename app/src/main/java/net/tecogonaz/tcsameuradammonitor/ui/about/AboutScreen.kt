@@ -3,6 +3,7 @@
 
 package net.tecogonaz.tcsameuradammonitor.ui.about
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -146,10 +147,6 @@ fun AboutScreen(
     onDebugSettingsEnabledMessage: ((String) -> Unit)? = null,
     showTopAppBar: Boolean = true
 ) {
-    var codebergExpanded by remember { mutableStateOf(false) }
-    var showCodebergAppChooserDialog by remember { mutableStateOf(false) }
-    var githubExpanded by remember { mutableStateOf(false) }
-    var showGithubAppChooserDialog by remember { mutableStateOf(false) }
     var versionClickCount by remember { mutableIntStateOf(0) }
     val versionClickResetKey = remember { mutableIntStateOf(0) }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -164,42 +161,9 @@ fun AboutScreen(
     val debugEnabledMsg = stringResource(R.string.debug_settings_enabled)
     val isJaLocale = LocaleUtils.effectiveLocale(LocalContext.current).language == Locale.JAPANESE.language
 
-    val codebergUrl = "https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android/"
-    val githubUrl = "https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/"
-    val versionName = BuildConfig.VERSION_NAME
+    val versionName = BuildConfig.VERSION_NAME.substringBefore("-")
     val versionCode = BuildConfig.VERSION_CODE
 
-    if (showCodebergAppChooserDialog) {
-        AppChooserDialog(
-            availableApps = availableApps,
-            url = codebergUrl,
-            onQueryApps = onQueryApps,
-            onDismiss = {
-                onClearApps()
-                showCodebergAppChooserDialog = false
-            },
-            onAppSelected = { appInfo ->
-                showCodebergAppChooserDialog = false
-                onOpenUrlWith(codebergUrl, appInfo)
-            }
-        )
-    }
-
-    if (showGithubAppChooserDialog) {
-        AppChooserDialog(
-            availableApps = availableApps,
-            url = githubUrl,
-            onQueryApps = onQueryApps,
-            onDismiss = {
-                onClearApps()
-                showGithubAppChooserDialog = false
-            },
-            onAppSelected = { appInfo ->
-                showGithubAppChooserDialog = false
-                onOpenUrlWith(githubUrl, appInfo)
-            }
-        )
-    }
 
     Scaffold(
         topBar = {
@@ -348,166 +312,142 @@ fun AboutScreen(
             item { HorizontalDivider() }
 
             item {
-                val codebergTitle = stringResource(R.string.app_info_codeberg)
-                var codebergTapX by remember { mutableFloatStateOf(0f) }
-                var codebergTapY by remember { mutableFloatStateOf(0f) }
-                val density = LocalDensity.current
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .pointerInput(Unit) {
-                                awaitEachGesture {
-                                    val event = awaitPointerEvent(PointerEventPass.Initial)
-                                    val down = event.changes.firstOrNull { it.pressed }
-                                    if (down != null) {
-                                        codebergTapX = down.position.x
-                                        codebergTapY = down.position.y
-                                    }
-                                }
-                            }
-                            .clickable(
-                                onClick = { codebergExpanded = true },
-                                role = Role.Button,
-                                onClickLabel = stringResource(
-                                    R.string.desc_open_link_menu,
-                                    stringResource(R.string.app_info_codeberg)
-                                )
-                            )
-                            .padding(vertical = 12.dp, horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_codeberg),
-                            contentDescription = null,
-                            modifier = Modifier.padding(end = 16.dp)
-                        )
-                        Column {
-                            Text(
-                                text = codebergTitle,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(Modifier.height(2.dp))
-                            Text(
-                                text = codebergUrl,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                    Box(modifier = Modifier.align(Alignment.TopStart)) {
-                        DropdownMenu(
-                            expanded = codebergExpanded,
-                            onDismissRequest = { codebergExpanded = false },
-                            offset = with(density) { DpOffset(codebergTapX.toDp(), codebergTapY.toDp()) }
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.action_open_url)) },
-                                onClick = {
-                                    codebergExpanded = false
-                                    onOpenUrl(codebergUrl)
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.action_open_url_with)) },
-                                onClick = {
-                                    codebergExpanded = false
-                                    showCodebergAppChooserDialog = true
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.action_share_url)) },
-                                onClick = {
-                                    codebergExpanded = false
-                                    onShareText(codebergUrl)
-                                }
-                            )
-                        }
-                    }
-                }
+                AboutExternalLinkRow(
+                    title = stringResource(R.string.app_info_github),
+                    url = "https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/",
+                    iconRes = R.drawable.ic_github,
+                    availableApps = availableApps,
+                    onOpenUrl = onOpenUrl,
+                    onOpenUrlWith = onOpenUrlWith,
+                    onShareText = onShareText,
+                    onQueryApps = onQueryApps,
+                    onClearApps = onClearApps
+                )
             }
             item { HorizontalDivider() }
-
             item {
-                val githubTitle = stringResource(R.string.app_info_github)
-                var githubTapX by remember { mutableFloatStateOf(0f) }
-                var githubTapY by remember { mutableFloatStateOf(0f) }
-                val density = LocalDensity.current
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .pointerInput(Unit) {
-                                awaitEachGesture {
-                                    val event = awaitPointerEvent(PointerEventPass.Initial)
-                                    val down = event.changes.firstOrNull { it.pressed }
-                                    if (down != null) {
-                                        githubTapX = down.position.x
-                                        githubTapY = down.position.y
-                                    }
-                                }
-                            }
-                            .clickable(
-                                onClick = { githubExpanded = true },
-                                role = Role.Button,
-                                onClickLabel = stringResource(
-                                    R.string.desc_open_link_menu,
-                                    stringResource(R.string.app_info_github)
-                                )
-                            )
-                            .padding(vertical = 12.dp, horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_github),
-                            contentDescription = null,
-                            modifier = Modifier.padding(end = 16.dp)
-                        )
-                        Column {
-                            Text(
-                                text = githubTitle,
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                            Spacer(Modifier.height(2.dp))
-                            Text(
-                                text = githubUrl,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                    Box(modifier = Modifier.align(Alignment.TopStart)) {
-                        DropdownMenu(
-                            expanded = githubExpanded,
-                            onDismissRequest = { githubExpanded = false },
-                            offset = with(density) { DpOffset(githubTapX.toDp(), githubTapY.toDp()) }
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.action_open_url)) },
-                                onClick = {
-                                    githubExpanded = false
-                                    onOpenUrl(githubUrl)
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.action_open_url_with)) },
-                                onClick = {
-                                    githubExpanded = false
-                                    showGithubAppChooserDialog = true
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text(stringResource(R.string.action_share_url)) },
-                                onClick = {
-                                    githubExpanded = false
-                                    onShareText(githubUrl)
-                                }
-                            )
+                AboutExternalLinkRow(
+                    title = stringResource(R.string.app_info_fdroid),
+                    url = "https://f-droid.org/ja/packages/net.tecogonaz.tcsameuradammonitor/",
+                    iconRes = R.drawable.ic_fdroid,
+                    availableApps = availableApps,
+                    onOpenUrl = onOpenUrl,
+                    onOpenUrlWith = onOpenUrlWith,
+                    onShareText = onShareText,
+                    onQueryApps = onQueryApps,
+                    onClearApps = onClearApps
+                )
+            }
+            item { HorizontalDivider() }
+        }
+    }
+}
+
+/** 配布先のリンクを表示し、既存の外部アプリ連携メニューを開く。 */
+@Composable
+private fun AboutExternalLinkRow(
+    title: String,
+    url: String,
+    @DrawableRes iconRes: Int,
+    availableApps: List<AppLinkInfo>,
+    onOpenUrl: (String) -> Unit,
+    onOpenUrlWith: (String, AppLinkInfo) -> Unit,
+    onShareText: (String) -> Unit,
+    onQueryApps: (String) -> Unit,
+    onClearApps: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var showAppChooserDialog by remember { mutableStateOf(false) }
+    if (showAppChooserDialog) {
+        AppChooserDialog(
+            availableApps = availableApps,
+            url = url,
+            onQueryApps = onQueryApps,
+            onDismiss = {
+                onClearApps()
+                showAppChooserDialog = false
+            },
+            onAppSelected = { appInfo ->
+                showAppChooserDialog = false
+                onOpenUrlWith(url, appInfo)
+            }
+        )
+    }
+
+    var tapX by remember { mutableFloatStateOf(0f) }
+    var tapY by remember { mutableFloatStateOf(0f) }
+    val density = LocalDensity.current
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .pointerInput(Unit) {
+                    awaitEachGesture {
+                        val event = awaitPointerEvent(PointerEventPass.Initial)
+                        val down = event.changes.firstOrNull { it.pressed }
+                        if (down != null) {
+                            tapX = down.position.x
+                            tapY = down.position.y
                         }
                     }
                 }
+                .clickable(
+                    onClick = { expanded = true },
+                    role = Role.Button,
+                    onClickLabel = stringResource(
+                        R.string.desc_open_link_menu,
+                        title
+                    )
+                )
+                .padding(vertical = 12.dp, horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = null,
+                modifier = Modifier.padding(end = 16.dp)
+            )
+            Column {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = url,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
-            item { HorizontalDivider() }
+        }
+        Box(modifier = Modifier.align(Alignment.TopStart)) {
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                offset = with(density) { DpOffset(tapX.toDp(), tapY.toDp()) }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.action_open_url)) },
+                    onClick = {
+                        expanded = false
+                        onOpenUrl(url)
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.action_open_url_with)) },
+                    onClick = {
+                        expanded = false
+                        showAppChooserDialog = true
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.action_share_url)) },
+                    onClick = {
+                        expanded = false
+                        onShareText(url)
+                    }
+                )
+            }
         }
     }
 }

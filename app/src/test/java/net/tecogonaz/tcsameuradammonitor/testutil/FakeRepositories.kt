@@ -129,6 +129,9 @@ class FakeSudmonitorHistoryDao : SudmonitorHistoryDao {
     override suspend fun getAllObservations(damId: String): List<SudmonitorHistoryObservationEntity> =
         observations
 
+    override suspend fun findLatestObservation(damId: String): SudmonitorHistoryObservationEntity? =
+        observations.filter { it.damId == damId }.maxByOrNull { it.timeEpochMs }
+
     override suspend fun queryObservationsByDamIdAndTimeRange(
         damId: String,
         from: Long,

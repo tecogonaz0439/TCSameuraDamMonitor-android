@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import net.tecogonaz.tcsameuradammonitor.data.source.local.HistoricalDatFileTable
 import net.tecogonaz.tcsameuradammonitor.data.source.local.room.DamDatabase
 import net.tecogonaz.tcsameuradammonitor.data.source.local.room.RoomDatabaseTransactionRunner
 import net.tecogonaz.tcsameuradammonitor.data.source.remote.DamFileParser
@@ -47,6 +48,10 @@ class HistoricalSearchRepositoryAndroidTest {
     private lateinit var context: Context
     private lateinit var database: DamDatabase
     private lateinit var repository: HistoricalSearchRepositoryImpl
+
+    // 同梱期間が増えてもネットワーク経路を検証できるよう、同梱最終年の翌年を使う。
+    private val networkFixtureYear = HistoricalDatFileTable.entries
+        .maxOf { it.endDatetime.take(4).toInt() } + 1
 
     @Before
     fun setUp() {
@@ -171,42 +176,42 @@ class HistoricalSearchRepositoryAndroidTest {
                 debugLogRepository = HiltFakeDebugLogRepository(),
                 context = context
             )
-            // 月次2026-07: 7/31(24:00)までをカバー
+            // 7月の月次: 7/31(24:00)までをカバー
             server.enqueue(
                 200,
                 sudmonitorDatBytes(
                     listOf(
-                        sudmonitorRow(date = "2026/7/31", time = "01:00", storagePercentage = "68.9"),
-                        sudmonitorRow(date = "2026/7/31", time = "02:00", storagePercentage = "68.8")
+                        sudmonitorRow(date = "$networkFixtureYear/7/31", time = "01:00", storagePercentage = "68.9"),
+                        sudmonitorRow(date = "$networkFixtureYear/7/31", time = "02:00", storagePercentage = "68.8")
                     )
                 ),
                 mapOf(
                     "X-TCS-Dam-Id" to "1368080700010",
-                    "X-TCS-History-Start" to "2026-07-01T00:00:00+09:00",
-                    "X-TCS-History-End" to "2026-08-01T00:00:00+09:00"
+                    "X-TCS-History-Start" to "$networkFixtureYear-07-01T00:00:00+09:00",
+                    "X-TCS-History-End" to "$networkFixtureYear-08-01T00:00:00+09:00"
                 )
             )
-            // 月次2026-08: 404
+            // 8月の月次: 404
             server.enqueue(404, byteArrayOf())
             // latest: 7/31〜8/1をカバー（untilは8/1 24:00=翌日00:00表記）
             server.enqueue(
                 200,
                 sudmonitorDatBytes(
                     listOf(
-                        sudmonitorRow(date = "2026/7/31", time = "01:00", storagePercentage = "55.0"),
-                        sudmonitorRow(date = "2026/7/31", time = "02:00", storagePercentage = "54.0"),
-                        sudmonitorRow(date = "2026/8/1", time = "01:00", storagePercentage = "68.5"),
-                        sudmonitorRow(date = "2026/8/1", time = "02:00", storagePercentage = "68.3")
+                        sudmonitorRow(date = "$networkFixtureYear/7/31", time = "01:00", storagePercentage = "55.0"),
+                        sudmonitorRow(date = "$networkFixtureYear/7/31", time = "02:00", storagePercentage = "54.0"),
+                        sudmonitorRow(date = "$networkFixtureYear/8/1", time = "01:00", storagePercentage = "68.5"),
+                        sudmonitorRow(date = "$networkFixtureYear/8/1", time = "02:00", storagePercentage = "68.3")
                     )
                 ),
                 mapOf(
                     "X-TCS-Dam-Id" to "1368080700010",
-                    "X-TCS-History-Since" to "2026-07-31T01:00:00+09:00",
-                    "X-TCS-History-Until" to "2026-08-02T00:00:00+09:00"
+                    "X-TCS-History-Since" to "$networkFixtureYear-07-31T01:00:00+09:00",
+                    "X-TCS-History-Until" to "$networkFixtureYear-08-02T00:00:00+09:00"
                 )
             )
 
-            val result = sudmonitorRepository.fetchAndStore(DamConfig.DEFAULT, "20260731", "20260801")
+            val result = sudmonitorRepository.fetchAndStore(DamConfig.DEFAULT, "${networkFixtureYear}0731", "${networkFixtureYear}0801")
 
             val meta = result.fold(
                 ifLeft = { throw AssertionError(it) },
@@ -218,11 +223,11 @@ class HistoricalSearchRepositoryAndroidTest {
 
             assertTrue(meta.id > 0L)
             assertNotNull(storedMeta)
-            assertEquals("20260731", meta.searchBgnDate)
-            assertEquals("20260801", meta.searchEndDate)
+            assertEquals("${networkFixtureYear}0731", meta.searchBgnDate)
+            assertEquals("${networkFixtureYear}0801", meta.searchEndDate)
             // 重複排除: 7/31は月次（高優先度）の行が残り、8/1はlatestの行が残る
             assertEquals(
-                listOf("2026/7/31 01:00", "2026/7/31 02:00", "2026/8/1 01:00", "2026/8/1 02:00"),
+                listOf("$networkFixtureYear/7/31 01:00", "$networkFixtureYear/7/31 02:00", "$networkFixtureYear/8/1 01:00", "$networkFixtureYear/8/1 02:00"),
                 data.map { it.time }
             )
             assertEquals(listOf(68.9f, 68.8f, 68.5f, 68.3f), data.map { it.storagePercentage })
@@ -235,7 +240,7 @@ class HistoricalSearchRepositoryAndroidTest {
     }
 
     @Test
-    fun fetchAndStore_sudmonitorMonthly_coversJuly2026() = runBlocking {
+    fun fetchAndStore_sudmonitorMonthly_coversUnbundledMonth() = runBlocking {
         LocalHttpServer("historical-sudmonitor-http-server").use { server ->
             server.start()
             val sudmonitorRepository = HistoricalSearchRepositoryImpl(
@@ -254,23 +259,23 @@ class HistoricalSearchRepositoryAndroidTest {
                 debugLogRepository = HiltFakeDebugLogRepository(),
                 context = context
             )
-            // バンドルは2026-06までなので2026-07はバンドル外
+            // ネットワークfixtureは同梱最終年の翌年で、バンドルに含まれない
             server.enqueue(
                 200,
                 sudmonitorDatBytes(
                     listOf(
-                        sudmonitorRow(date = "2026/7/1", time = "01:00", storagePercentage = "80.0"),
-                        sudmonitorRow(date = "2026/7/31", time = "24:00", storagePercentage = "81.0")
+                        sudmonitorRow(date = "$networkFixtureYear/7/1", time = "01:00", storagePercentage = "80.0"),
+                        sudmonitorRow(date = "$networkFixtureYear/7/31", time = "24:00", storagePercentage = "81.0")
                     )
                 ),
                 mapOf(
                     "X-TCS-Dam-Id" to "1368080700010",
-                    "X-TCS-History-Start" to "2026-07-01T00:00:00+09:00",
-                    "X-TCS-History-End" to "2026-08-01T00:00:00+09:00"
+                    "X-TCS-History-Start" to "$networkFixtureYear-07-01T00:00:00+09:00",
+                    "X-TCS-History-End" to "$networkFixtureYear-08-01T00:00:00+09:00"
                 )
             )
 
-            val result = sudmonitorRepository.fetchAndStore(DamConfig.DEFAULT, "20260701", "20260731")
+            val result = sudmonitorRepository.fetchAndStore(DamConfig.DEFAULT, "${networkFixtureYear}0701", "${networkFixtureYear}0731")
 
             val meta = result.fold(
                 ifLeft = { throw AssertionError(it) },
@@ -279,12 +284,12 @@ class HistoricalSearchRepositoryAndroidTest {
             val data = sudmonitorRepository.getAllDataByMetaId(meta.id)
 
             assertTrue(meta.id > 0L)
-            assertEquals("20260701", meta.searchBgnDate)
-            assertEquals("20260731", meta.searchEndDate)
-            assertEquals(listOf("2026/7/1 01:00", "2026/7/31 24:00"), data.map { it.time })
+            assertEquals("${networkFixtureYear}0701", meta.searchBgnDate)
+            assertEquals("${networkFixtureYear}0731", meta.searchEndDate)
+            assertEquals(listOf("$networkFixtureYear/7/1 01:00", "$networkFixtureYear/7/31 24:00"), data.map { it.time })
             assertEquals(listOf(80.0f, 81.0f), data.map { it.storagePercentage })
-            assertEquals("2026/7/1 01:00", meta.dataStartTimeStr)
-            assertEquals("2026/7/31 24:00", meta.dataEndTimeStr)
+            assertEquals("$networkFixtureYear/7/1 01:00", meta.dataStartTimeStr)
+            assertEquals("$networkFixtureYear/7/31 24:00", meta.dataEndTimeStr)
             assertEquals(listOf(meta), sudmonitorRepository.getMetaList())
         }
     }

@@ -1169,8 +1169,6 @@ fun AutoUpdateIntervalSettingItem(
         AutoUpdateInterval.TWELVE_HOURS -> stringResource(id = R.string.settings_general_auto_update_interval_12_hours)
         AutoUpdateInterval.ONE_HOUR -> stringResource(id = R.string.settings_general_auto_update_interval_one_hour)
     }
-    val isShortInterval =
-        currentInterval == AutoUpdateInterval.ONE_HOUR || currentInterval == AutoUpdateInterval.TWELVE_HOURS
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Box {
@@ -1189,11 +1187,7 @@ fun AutoUpdateIntervalSettingItem(
                     style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = if (isShortInterval) {
-                        "$intervalLabel\n(${stringResource(id = R.string.settings_general_auto_update_daily_history_note)})"
-                    } else {
-                        intervalLabel
-                    },
+                    text = intervalLabel,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

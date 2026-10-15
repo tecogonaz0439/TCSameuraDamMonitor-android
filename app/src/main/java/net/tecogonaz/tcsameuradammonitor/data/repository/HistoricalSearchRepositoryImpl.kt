@@ -31,13 +31,12 @@ import net.tecogonaz.tcsameuradammonitor.domain.model.SUDMONITOR_HOST
 import net.tecogonaz.tcsameuradammonitor.domain.repository.DebugLogRepository
 import net.tecogonaz.tcsameuradammonitor.domain.repository.HistoricalSearchRepository
 import net.tecogonaz.tcsameuradammonitor.domain.repository.SettingsRepository
+import net.tecogonaz.tcsameuradammonitor.util.HistoryHeaderTime
 import net.tecogonaz.tcsameuradammonitor.util.TimeUtils
 import net.tecogonaz.tcsameuradammonitor.util.catchNonCancellation
 import net.tecogonaz.tcsameuradammonitor.util.catchNonCancellationSuspend
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.time.Instant
-import java.time.LocalTime
-import java.time.OffsetDateTime
 import java.time.YearMonth
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
@@ -270,7 +269,7 @@ class HistoricalSearchRepositoryImpl @Inject constructor(
      * バンドルと読込済み sudmonitor 日次過去データ（専用テーブル、D8）のカバー区間の補集合（ギャップ）を求め、
      * ギャップと交差する月の月次ファイルを [SudmonitorHistoricalClient.fetchMonthly] で取得し、それでも残るギャップを
      * [SudmonitorHistoricalClient.fetchLatest] で補完します。各レスポンスの since/until ヘッダーを
-     * [OffsetDateTime.parse] で解釈して日単位（JST）のカバー区間を累積し、残ギャップが空になった場合のみ、
+     * [HistoryHeaderTime] で解釈して日単位（JST）のカバー区間を累積し、残ギャップが空になった場合のみ、
      * バンドル・ローカル・sudmonitor の全フラグメントを優先度順（バンドル ≧ ローカル > 月次 > latest）でマージして
      * [SudmonitorCascadeResult.Success] を返します。
      *
@@ -544,7 +543,7 @@ class HistoricalSearchRepositoryImpl @Inject constructor(
     /**
      * sudmonitorの履歴レスポンスの since/until ヘッダーを解釈して、日単位（JST）のカバー区間を計算します。
      *
-     * since/until は [OffsetDateTime.parse]（ISO-8601）で解釈し、ヘッダ欠落・パース失敗は「カバレッジ不明」として
+     * since/until は [HistoryHeaderTime] で解釈し、ヘッダ欠落・パース失敗は「カバレッジ不明」として
      * null（カバーなし扱い）を返します。until が `00:00`（24:00表記）の場合は前日までをカバーとみなします。
      * 計算結果は [requiredStartDate, requiredEndDate] にクリップして返します。
      *
@@ -558,12 +557,9 @@ class HistoricalSearchRepositoryImpl @Inject constructor(
         requiredStartDate: Long,
         requiredEndDate: Long
     ): LongRange? {
-        val since = result.since?.let { runCatching { OffsetDateTime.parse(it) }.getOrNull() } ?: return null
-        val until = result.until?.let { runCatching { OffsetDateTime.parse(it) }.getOrNull() } ?: return null
-        val startDay = since.atZoneSameInstant(TimeUtils.JST_ZONE).toLocalDate()
-        val untilDay = until.atZoneSameInstant(TimeUtils.JST_ZONE).toLocalDate()
-        // until が 00:00 の場合は 24:00 表記（前日まで）として扱う
-        val endDay = if (until.toLocalTime() == LocalTime.MIDNIGHT) untilDay.minusDays(1) else untilDay
+        val range = HistoryHeaderTime.rollingCoverage(result.since, result.until) ?: return null
+        val startDay = range.start
+        val endDay = range.end
         val startMillis = startDay.atStartOfDay(TimeUtils.JST_ZONE).toInstant().toEpochMilli()
         val endMillis = endDay.atStartOfDay(TimeUtils.JST_ZONE).toInstant().toEpochMilli()
         if (endMillis < startMillis) return null

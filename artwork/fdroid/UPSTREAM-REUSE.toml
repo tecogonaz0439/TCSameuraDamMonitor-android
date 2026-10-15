@@ -1,0 +1,172 @@
+version = 1
+SPDX-PackageName = "F-Droid Artwork"
+SPDX-PackageSupplier = "F-Droid Contributors <team@f-droid.org>"
+SPDX-PackageDownloadLocation = "https://gitlab.com/fdroid/artwork"
+
+[[annotations]]
+path = ["fdroid-logo-2010/beardroid.png", "fdroid-logo-2010/beardroid.svg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2013 Daniel Martí <mvdan@mvdan.cc>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = ["fdroid-logo-2012/fdroidheader-thumb.png", "fdroid-logo-2012/fdroid-logo-blue-48pxb.svg", "fdroid-logo-2012/fdroid-135.png", "fdroid-logo-2012/icon.png", "fdroid-logo-2012/fdroid-logo.svg", "fdroid-logo-2012/fdroidheader.png", "fdroid-logo-2012/fdroidheader.xcf", "fdroid-logo-2012/fdroid-logo-green48pxg.svg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2012 William Theaker"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-2.0-or-later"
+
+[[annotations]]
+path = ["fdroid-logo-2013/updates_notification.svg", "fdroid-logo-2013/fdroid-logo.svg", "fdroid-logo-2013/available-on-fdroid.svg", "fdroid-logo-2013/header.svg", "fdroid-logo-2013/install-client-button.svg", "fdroid-logo-2013/default_notification.svg", "fdroid-logo-2013/default-app.svg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["2012 William Theaker", "2013 Robert Martinez"]
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = ["fdroid-logo-2015/updates_notification.svg", "fdroid-logo-2015/fdroid-logo-privileged.svg", "fdroid-logo-2015/fdroid-logo.svg", "fdroid-logo-2015/fdroid-logo.svg", "fdroid-logo-2015/default_notification.svg", "fdroid-logo-2015/default-app.svg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["2012 William Theaker", "2013 Robert Martinez", "2015 Andrew Nayenko <relan@airpost.net>"]
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "fdroid-logo-2015/fdroid-logo-pride.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["2012 William Theaker", "2013 Robert Martinez", "2015 Andrew Nayenko <relan@airpost.net>", "2022 Wolfshappen"]
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "fdroid-logo-2015/available-on-fdroid.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["2013 Robert Martinez", "2015 Andrew Nayenko <relan@airpost.net>"]
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = ["fdroid-logo-2015/sticker_designs/fdroid_round.pdf", "fdroid-logo-2015/sticker_designs/get-it-on-fdroid.pdf"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Marcus Hoffmann <bubu@bubu1.eu>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "fdroid-logo-2015/sticker_designs/sticker-hexagon.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2020 Pander <pander@users.sourceforge.net>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "fdroid-logo-2015/default-app.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["2012 William Theaker", "2013 Robert Martinez", "2015 Andrew Nayenko <relan@airpost.net>"]
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = ["badge/src/get-it-on.svg", "badge/src/get-it-on-**.svg", "badge/get-it-on-**.svg", "badge/get-it-on.png", "badge/get-it-on-**.png"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2016 Andrew Nayenko <relan@airpost.net>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "badge/get-it-on.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2016 Andrew Nayenko <relan@airpost.net>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = ["badge/src/bottom_ltr.svg", "badge/src/top_and_bottom_ltr.svg", "badge/src/top_and_bottom_rtl.svg", "badge/src/top_ltr.svg", "badge/src/top_rtl.svg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2016 Andrew Nayenko <relan@airpost.net>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "badge/src/**.yml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "F-Droid Translations contributors, see: https://hosted.weblate.org/projects/f-droid/badge/"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "forum/discourse.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2017 Andrew Nayenko <relan@airpost.net>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "isometric-fdroid/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2021 Onno van den Dungen <info@onnno.nl>"
+SPDX-License-Identifier = "CC-BY-SA-3.0"
+
+[[annotations]]
+path = "header/2022-Topio-Mondstern.jpg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2022 Topio e.V. Michael Wirths <info@topio.info>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/Ads.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Andreas Demmelbauer <git@notice.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/DisabledAlgorithm.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Andreas Demmelbauer <git@notice.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/KnownVuln.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Andreas Demmelbauer <git@notice.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/NoSourceSince.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Andreas Demmelbauer <git@notice.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/NonFreeAdd.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Andreas Demmelbauer <git@notice.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/NonFreeAssets.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Andreas Demmelbauer <git@notice.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/NonFreeDep.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Andreas Demmelbauer <git@notice.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/NonFreeNet.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Andreas Demmelbauer <git@notice.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/TetheredNet.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["2019 Andreas Demmelbauer <git@notice.at>", "2024 linsui <linsui@inbox.lv>"]
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/Tracking.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Andreas Demmelbauer <git@notice.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = "icons/antifeatures/UpstreamNonFree.svg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2019 Andreas Demmelbauer <git@notice.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"
+
+[[annotations]]
+path = ["fdroid-logo-2015/fdroid-pride23-rando.png", "fdroid-logo-2015/fdroid-pride23-rando.xcf"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2023 Michael Pöhn <michael@poehn.at>"
+SPDX-License-Identifier = "CC-BY-SA-3.0 or GPL-3.0-or-later"

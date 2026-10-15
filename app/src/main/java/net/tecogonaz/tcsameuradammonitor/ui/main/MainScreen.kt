@@ -379,7 +379,7 @@ fun MainScreen(
     
     var sudmonitorHistoryCanRefresh by remember { mutableStateOf(true) }
     LaunchedEffect(
-        uiState.sudmonitorHistory?.nextUpdateAtEpochMs,
+        uiState.sudmonitorHistory?.fetchedAtEpochMs,
         uiState.sudmonitorHistory?.damId,
         isSudmonitorHistoryUpdateRunning,
         localTimeMillis
@@ -436,10 +436,11 @@ fun MainScreen(
                     snackbarHostState.showSnackbar(manualUpdateInProgressMsg)
                 }
                 !isSudmonitorHistoryRefreshAvailable() -> {
-                    val nextUpdateAt = history?.nextUpdateAtEpochMs
-                    if (nextUpdateAt != null) {
+                    // cooldown 終了時刻は最終成功取得時刻 + 1時間（保存済み nextUpdateAtEpochMs ではない）
+                    val availableAt = history?.damId?.let { viewModel.manualRefreshAvailableAt(it) }
+                    if (availableAt != null) {
                         val timeDisplay = TimeUtils.appendJstSuffix(
-                            TimeUtils.formatToJst(nextUpdateAt, "yyyy/MM/dd HH:mm")
+                            TimeUtils.formatToJst(availableAt, "yyyy/MM/dd HH:mm")
                         )
                         snackbarHostState.showSnackbar(
                             String.format(refreshTooEarlyMsgTemplate, timeDisplay)
@@ -1283,11 +1284,13 @@ fun MainScreen(
                                     }
 
                                     // 3行目: 貯水率範囲（履歴サマリーCard 3行目と同じ書式。
+                                    // 最新行（当日 00:00）が欠測でも期間内の最初/最後の有効値で表示し、
+                                    // 有効値が1つも無い場合のみ欠測プレースホルダーを表示する。
                                     // 行未保存時は行自体を表示しない=ダム名のみ）
                                     val dailyLine3 = dailyHistory?.let { history ->
                                         run {
-                                            val startPct = history.firstStorageRatePct
-                                            val endPct = history.lastStorageRatePct
+                                            val startPct = uiState.sudmonitorHistoryFirstValidRatePct
+                                            val endPct = uiState.sudmonitorHistoryLastValidRatePct
                                             val minPct = history.minStorageRatePct
                                             val maxPct = history.maxStorageRatePct
                                             if (startPct != null && endPct != null) {
@@ -2111,6 +2114,8 @@ fun MainScreen(
                             } else {
                                 null
                             },
+                            sudmonitorHistoryFirstValidRatePct = uiState.sudmonitorHistoryFirstValidRatePct,
+                            sudmonitorHistoryLastValidRatePct = uiState.sudmonitorHistoryLastValidRatePct,
                             isSudmonitorHistoryMode = uiState.isSudmonitorHistoryMode,
                             onSwitchToSudmonitorHistoryMode = {
                                 closeDrawerThen { viewModel.switchToSudmonitorHistoryMode() }
@@ -2189,6 +2194,8 @@ fun MainScreen(
                             } else {
                                 null
                             },
+                            sudmonitorHistoryFirstValidRatePct = uiState.sudmonitorHistoryFirstValidRatePct,
+                            sudmonitorHistoryLastValidRatePct = uiState.sudmonitorHistoryLastValidRatePct,
                             isSudmonitorHistoryMode = uiState.isSudmonitorHistoryMode,
                             onSwitchToSudmonitorHistoryMode = {
                                 viewModel.switchToSudmonitorHistoryMode()

@@ -2,7 +2,7 @@
 
 # Sameura Dam Monitor
 
-**Sameura Dam Monitor** is an Android app that retrieves dam data published through the Water Information System of the Ministry of Land, Infrastructure, Transport and Tourism of Japan and displays the water storage rate and related data for 125 dams across Japan, including Sameura Dam. The Android app is currently distributed directly as a built APK file through the Codeberg/GitHub Releases pages. Distribution through app stores such as F-Droid or Google Play is planned for a later date.
+**Sameura Dam Monitor** is an Android app that retrieves dam data published through the Water Information System of the Ministry of Land, Infrastructure, Transport and Tourism of Japan and displays the water storage rate and related data for 125 dams across Japan, including Sameura Dam. The Android app is available through F-Droid and as signed APKs through GitHub Releases. Google Play distribution is currently being prepared for open testing.
 
 This app is optimized for udon noodle lovers in Kagawa Prefecture who worry about Sameura Dam's water storage rate.
 
@@ -20,7 +20,9 @@ This app is optimized for udon noodle lovers in Kagawa Prefecture who worry abou
 
 ## How to Obtain
 
-1. Download the latest signed APK attached to the repository's [Releases](https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android/releases) page.
+Install the app from [F-Droid](https://f-droid.org/packages/net.tecogonaz.tcsameuradammonitor/), or download an APK from GitHub Releases:
+
+1. Download the latest signed APK from [GitHub Releases](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android/releases).
 2. Open the downloaded APK file to install it.
    - If a security warning ("Install unknown apps") appears during installation, allow installation from the settings on your device.
 
@@ -35,12 +37,11 @@ The data originates from MLIT's Water Information System. By default, the app re
 - `https://sudmonitor.kusugami-lab.net`
 - `https://www1.river.go.jp`
 
-## Repositories
+## Repository
 
-- **Codeberg** : [tecogonaz0439/TCSameuraDamMonitor-android](https://codeberg.org/tecogonaz0439/TCSameuraDamMonitor-android)
-- **GitHub** : [tecogonaz0439/TCSameuraDamMonitor-android](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android)
+- **GitHub**: [tecogonaz0439/TCSameuraDamMonitor-android](https://github.com/tecogonaz0439/TCSameuraDamMonitor-android)
 
-GitHub is a mirror of Codeberg and is **read-only**. Issues and pull requests are only accepted on Codeberg.
+Please report issues and submit pull requests in this repository.
 
 ## Links
 
@@ -52,3 +53,5 @@ GitHub is a mirror of Codeberg and is **read-only**. Issues and pull requests ar
 ## License
 
 The source code is licensed under the [Apache License, Version 2.0](LICENSE).
+
+The F-Droid link icon is an adaptation of the F-Droid logo, licensed under CC-BY-SA-3.0. See [artwork attribution](artwork/fdroid/README.md).

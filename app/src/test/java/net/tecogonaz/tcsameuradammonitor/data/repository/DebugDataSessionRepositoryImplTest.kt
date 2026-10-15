@@ -257,6 +257,8 @@ class DebugDataSessionRepositoryImplTest {
             bumpRevision()
         }
         override suspend fun getAllObservations(damId: String) = observations.filter { it.damId == damId }
+        override suspend fun findLatestObservation(damId: String): SudmonitorHistoryObservationEntity? =
+            observations.filter { it.damId == damId }.maxByOrNull { it.timeEpochMs }
         override suspend fun queryObservationsByDamIdAndTimeRange(damId: String, from: Long, to: Long) =
             observations.filter { it.damId == damId && it.timeEpochMs in from..to }
 

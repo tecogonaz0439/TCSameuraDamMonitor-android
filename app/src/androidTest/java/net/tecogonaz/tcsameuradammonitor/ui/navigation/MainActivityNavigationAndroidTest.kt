@@ -32,6 +32,7 @@ import net.tecogonaz.tcsameuradammonitor.domain.model.DamHistoricalData
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamLoadStatus
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamListData
 import net.tecogonaz.tcsameuradammonitor.domain.model.HistoricalSearchMeta
+import net.tecogonaz.tcsameuradammonitor.domain.model.RealtimeDataSource
 import net.tecogonaz.tcsameuradammonitor.domain.repository.DamDataRepository
 import net.tecogonaz.tcsameuradammonitor.domain.repository.DatabaseMaintenanceRepository
 import net.tecogonaz.tcsameuradammonitor.domain.repository.DebugDataSessionRepository
@@ -342,6 +343,11 @@ class MainActivityNavigationAndroidTest {
 
     @Test
     fun settingsDamSelectionItem_changesDamInDialogs_withoutExitingActivity() {
+        settingsFake.reset(
+            net.tecogonaz.tcsameuradammonitor.domain.model.AppSettings(
+                realtimeDataSource = RealtimeDataSource.MLIT_DIRECT
+            )
+        )
         val targetDam = DamListData.allDams.first {
             it.id != net.tecogonaz.tcsameuradammonitor.domain.model.AppSettings.DEFAULT_DAM_ID
         }

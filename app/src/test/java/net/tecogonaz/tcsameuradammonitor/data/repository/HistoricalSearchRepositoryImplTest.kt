@@ -388,6 +388,79 @@ class HistoricalSearchRepositoryImplTest {
     }
 
     @Test
+    fun fetchAndStore_sudmonitorMonthlyT24EndCoversPreviousDayWithoutMlitAccessJuly2026() = runTest {
+        isolateFromBundledHistoricalData()
+        val dao = FakeHistoricalSearchDao(insertedMetaId = 42L)
+        val context = contextWithHistoricalStrings()
+        sudmonitorServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader("X-TCS-Dam-Id", "1368080700010")
+                .setHeader("X-TCS-History-Start", "2026-07-01T01:00:00+09:00")
+                .setHeader("X-TCS-History-End", "2026-07-31T24:00:00+09:00")
+                .setBody(
+                    Buffer().write(
+                        historicalDat(
+                            listOf(
+                                historicalRow(date = "2026/7/1", time = "01:00", storagePercentage = "61.2"),
+                                historicalRow(date = "2026/7/31", time = "24:00", storagePercentage = "62.3")
+                            )
+                        )
+                    )
+                )
+        )
+        val networkDataSource = mockk<DamNetworkDataSource>()
+        val repository = createRepository(
+            dao = dao,
+            context = context,
+            networkDataSource = networkDataSource
+        )
+
+        val result = repository.fetchAndStore(supportedDam(), "20260701", "20260731")
+
+        assertTrue(result.isRight())
+        assertEquals(1, sudmonitorServer.requestCount)
+        assertEquals(
+            "/v1/history/1368080700010/${SudmonitorHistoricalClient.monthlyFileName("1368080700010", YearMonth.of(2026, 7))}",
+            sudmonitorServer.takeRequest().path
+        )
+        assertEquals(listOf("2026/7/1 01:00", "2026/7/31 24:00"), dao.insertedData.map { it.timeStr })
+    }
+
+    @Test
+    fun fetchAndStore_sudmonitorMonthlyInvalidT24EndFallsBackToMlitJuly2026() = runTest {
+        isolateFromBundledHistoricalData()
+        val dao = FakeHistoricalSearchDao(insertedMetaId = 42L)
+        val context = contextWithHistoricalStrings()
+        sudmonitorServer.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setHeader("X-TCS-History-Start", "2026-07-01T01:00:00+09:00")
+                .setHeader("X-TCS-History-End", "2026-07-31T24:01:00+09:00")
+                .setBody(Buffer().write(historicalDat(listOf(historicalRow(date = "2026/7/1", time = "01:00", storagePercentage = "61.2")))))
+        )
+        sudmonitorServer.enqueue(MockResponse().setResponseCode(404))
+        val networkDataSource = mockk<DamNetworkDataSource>()
+        coEvery { networkDataSource.fetchBytes(match { it.contains("DspDamData.exe") }) } returns
+            Either.Right("""<html><body><a href="/dat/dam-history.dat">dat</a></body></html>""".toByteArray(Charset.forName("EUC-JP")))
+        coEvery { networkDataSource.fetchBytes("https://www1.river.go.jp/dat/dam-history.dat") } returns
+            Either.Right(historicalDat(listOf(historicalRow(date = "2026/7/1", time = "01:00", storagePercentage = "61.2"))))
+        val repository = createRepository(
+            dao = dao,
+            context = context,
+            networkDataSource = networkDataSource
+        )
+
+        val result = repository.fetchAndStore(supportedDam(), "20260701", "20260731")
+
+        assertTrue(result.isRight())
+        assertEquals(2, sudmonitorServer.requestCount)
+        coVerify(exactly = 1) { networkDataSource.fetchBytes(match { it.contains("DspDamData.exe") }) }
+        coVerify(exactly = 1) { networkDataSource.fetchBytes("https://www1.river.go.jp/dat/dam-history.dat") }
+        assertEquals(1, dao.insertedData.size)
+    }
+
+    @Test
     fun fetchAndStore_sudmonitorMonthlyPartialCoverage_latest404_fallsBackToMlitAugust2026() = runTest {
         isolateFromBundledHistoricalData()
         val dao = FakeHistoricalSearchDao(insertedMetaId = 42L)
@@ -1294,6 +1367,9 @@ class HistoricalSearchRepositoryImplTest {
             from: Long,
             to: Long
         ): List<SudmonitorHistoryObservationEntity> = emptyList()
+
+        override suspend fun findLatestObservation(damId: String): SudmonitorHistoryObservationEntity? =
+            observations.filter { it.damId == damId }.maxByOrNull { it.timeEpochMs }
 
         override suspend fun deleteAllObservations() = Unit
         override suspend fun deleteAllHistory() = Unit

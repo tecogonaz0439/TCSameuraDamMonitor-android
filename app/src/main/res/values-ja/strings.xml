@@ -177,7 +177,6 @@
     <string name="settings_general_auto_update_interval_one_day">1日</string>
     <string name="settings_general_auto_update_interval_12_hours">12時間</string>
     <string name="settings_general_auto_update_interval_one_hour">1時間</string>
-    <string name="settings_general_auto_update_daily_history_note">過去データ(日次)の自動更新間隔は1日になります</string>
     <string name="settings_general_auto_update_last">自動更新 前回(実績)</string>
 
     <string name="settings_general_auto_update_next_timing">自動更新 次回</string>
@@ -386,8 +385,8 @@
     <string name="app_info_privacy_policy">プライバシーポリシー</string>
     <string name="app_info_privacy_policy_ja">プライバシーポリシー</string>
     <string name="app_info_oss_license">OSSライセンス</string>
-    <string name="app_info_codeberg">リポジトリ(Codeberg)</string>
     <string name="app_info_github">リポジトリ(GitHub)</string>
+    <string name="app_info_fdroid">アプリストア(F-Droid)</string>
 
     <string name="dialog_version_format">バージョン %1$s (ビルド %2$d)</string>
     <string name="dialog_terms_of_use_title">利用規約</string>

@@ -106,6 +106,10 @@ private const val MILLIS_PER_HOUR = 3600L * 1000L
  * @property sudmonitorHistory sudmonitor 日次過去データの保存行（[SudmonitorHistory]）。
  * @property sudmonitorHistoryDamConfig 過去データ(日次)モードで表示対象となっているダムの設定情報（保存行が未保存の間も対象ダムの設定を保持する）。
  * @property sudmonitorHistoryAllData sudmonitor 日次過去データの全観測行リスト（時刻昇順）。
+ * @property sudmonitorHistoryFirstValidRatePct 日次過去データ全観測行のうち最初の有効な貯水率（%）。
+ *          有効値が1つも無い場合は null（[sudmonitorHistoryAllData] から派生）。
+ * @property sudmonitorHistoryLastValidRatePct 日次過去データ全観測行のうち最後の有効な貯水率（%）。
+ *          有効値が1つも無い場合は null（[sudmonitorHistoryAllData] から派生）。
  * @property sudmonitorHistoryVisibleData 期間絞り込み後・画面描画用の観測行リスト。
  * @property sudmonitorHistoryDisplayData 過去データ(日次)一覧で段階的に読み込まれ（ページングされ）現在レンダリング対象となっている観測行リスト。
  * @property sudmonitorHistoryDisplayFromMillis 過去データ(日次)一覧で表示中の最古の日時のタイムスタンプ（ミリ秒）。
@@ -219,6 +223,24 @@ data class MainUiState(
             isHistoricalMode -> historicalDamConfig
             else -> damConfig
         }
+
+    /**
+     * 日次過去データ全観測行のうち、最初の有効な貯水率（%）。
+     *
+     * 最新行（当日 00:00）が欠測でも貯水率推移を表示するためのフォールバック値。
+     * 有効値が1つも無い場合は null となり、UI は欠測プレースホルダーを表示する。
+     */
+    val sudmonitorHistoryFirstValidRatePct: Float?
+        get() = sudmonitorHistoryAllData.firstNotNullOfOrNull { it.storagePercentage }
+
+    /**
+     * 日次過去データ全観測行のうち、最後の有効な貯水率（%）。
+     *
+     * 最新行（当日 00:00）が欠測でも貯水率推移を表示するためのフォールバック値。
+     * 有効値が1つも無い場合は null となり、UI は欠測プレースホルダーを表示する。
+     */
+    val sudmonitorHistoryLastValidRatePct: Float?
+        get() = sudmonitorHistoryAllData.lastOrNull { it.storagePercentage != null }?.storagePercentage
 }
 
 /**
@@ -595,6 +617,12 @@ class MainViewModel @Inject constructor(
 
         if (_uiState.value.isSudmonitorHistoryMode) {
             reloadSudmonitorHistoryDisplay(history)
+        } else {
+            // サイドバー常設エントリの貯水率推移（最初/最後の有効値）は全観測行から派生するため、
+            // リアルタイム表示中も保存行のemit時に観測行を読み込み、最新行（当日 00:00）が
+            // 欠測でも `-- %` にならないようにする。
+            val allData = sudmonitorHistoryRepository.getAllObservations(history.damId)
+            _uiState.update { it.copy(sudmonitorHistoryAllData = allData) }
         }
         refreshLoadedHistoricalComparisons()
     }
@@ -886,7 +914,7 @@ class MainViewModel @Inject constructor(
      * 過去データ(日次)の自動更新状態を Snackbar で表示します。
      *
      * 日次過去データの定期取得は既存の自動更新スケジューラを共用するため、再スケジュールは行いません。
-     * 間隔表示はクールダウン考慮の実効間隔（1時間 / 12時間 は「1日」）を使用し、前回(実績)は
+     * 間隔表示はリアルタイムと同じ実際の設定間隔（[AppSettings.autoUpdateInterval]）を使用し、前回(実績)は
      * 日次過去データ保存行の [SudmonitorHistory.fetchedAtEpochMs] を表示します（プラン §4.2・Web版準拠）。
      * 行未保存（未取得）の場合は既存の次回予定（自動更新のスケジュール表示）を代用します。
      */
@@ -901,9 +929,8 @@ class MainViewModel @Inject constructor(
                 emitSnackbarMessage(context.getString(R.string.main_autorenew_disabled))
                 return@launch
             }
-            val effectiveInterval = effectiveAutoUpdateIntervalForDailyHistory(settings.autoUpdateInterval)
             val intervalLabel = context.getString(
-                when (effectiveInterval) {
+                when (settings.autoUpdateInterval) {
                     AutoUpdateInterval.ONE_WEEK -> R.string.settings_general_auto_update_interval_one_week
                     AutoUpdateInterval.ONE_DAY -> R.string.settings_general_auto_update_interval_one_day
                     AutoUpdateInterval.TWELVE_HOURS -> R.string.settings_general_auto_update_interval_12_hours
@@ -1597,11 +1624,11 @@ class MainViewModel @Inject constructor(
     /**
      * 対象ダムの日次過去データの手動更新クールダウン終了時刻を返します。
      *
-     * 保存済み [SudmonitorHistory.nextUpdateAtEpochMs] を返し、行未保存・取得前は null
-     * （= いつでも手動更新可）です。
+     * 最終成功取得時刻（保存行の `fetchedAtEpochMs`。自動取得でも更新される）+ 1時間を返し、
+     * 行未保存・取得前・Debug ON 時は null（= いつでも手動更新可）です。
      *
      * @param damId 対象ダムの観測所ID
-     * @return クールダウン終了時刻のミリ秒、未保存の場合は null
+     * @return クールダウン終了時刻のミリ秒、未保存・Debug ON 時は null
      */
     suspend fun manualRefreshAvailableAt(damId: String): Long? =
         sudmonitorHistoryRepository.manualRefreshAvailableAt(damId)
@@ -2063,20 +2090,3 @@ class MainViewModel @Inject constructor(
     suspend fun canOpenHistoricalSearchDialog(): Boolean =
         historicalSearchRepository.getStoredMetaCount() < HISTORICAL_SEARCH_MAX_STORED_COUNT
 }
-
-/**
- * 過去データ(日次)の自動更新における実効間隔を返します。
- *
- * 自動更新の定期スケジューラはリアルタイムと共用するため、間隔 1時間 / 12時間 の場合は
- * 日次過去データのクールダウン（保存済み `nextUpdateAtEpochMs`）により実質1日1回の更新になります
- * （D7・プラン §3.3）。Snackbar の間隔表示用の純粋関数です。
- *
- * @param interval 自動更新の設定間隔
- * @return 過去データ(日次)の実効間隔（1時間 / 12時間 の場合は [AutoUpdateInterval.ONE_DAY]）
- */
-internal fun effectiveAutoUpdateIntervalForDailyHistory(interval: AutoUpdateInterval): AutoUpdateInterval =
-    if (interval == AutoUpdateInterval.ONE_HOUR || interval == AutoUpdateInterval.TWELVE_HOURS) {
-        AutoUpdateInterval.ONE_DAY
-    } else {
-        interval
-    }

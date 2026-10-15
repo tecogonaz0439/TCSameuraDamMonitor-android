@@ -33,6 +33,7 @@ import net.tecogonaz.tcsameuradammonitor.domain.model.AppSettings
 import net.tecogonaz.tcsameuradammonitor.domain.model.AutoUpdateInterval
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamConfig
 import net.tecogonaz.tcsameuradammonitor.domain.model.DamConfigProvider
+import net.tecogonaz.tcsameuradammonitor.domain.model.RealtimeDataSource
 
 import net.tecogonaz.tcsameuradammonitor.domain.repository.DamDataRepository
 import net.tecogonaz.tcsameuradammonitor.domain.repository.SettingsRepository
@@ -105,6 +106,7 @@ class MlitMockServerAndroidTest {
     fun setUp() {
         server = LocalHttpServer("mlit-local-http-server").also { it.start() }
         boundMlitEndpointConfig = MlitEndpointConfig.localhostMlitProxy(server.url("/"))
+        boundSudmonitorEndpointConfig = SudmonitorEndpointConfig.localhostHttp(server.url("/"))
         hiltRule.inject()
     }
 
@@ -227,10 +229,13 @@ class MlitMockServerAndroidTest {
             val repository = DamDataRepositoryImpl(
                 networkDataSource = DamNetworkDataSource(endpointConfig),
                 sudmonitorNetworkDataSource = SudmonitorNetworkDataSource(
-                    SudmonitorEndpointConfig.production()
+                    SudmonitorEndpointConfig.localhostHttp(server.url("/"))
                 ),
                 parser = DamFileParser("https://www1.river.go.jp/", endpointConfig),
-                settingsRepository = HiltFakeSettingsRepository(AppSettings(initialAutoUpdateDialogShown = true)),
+                settingsRepository = HiltFakeSettingsRepository(AppSettings(
+                    initialAutoUpdateDialogShown = true,
+                    realtimeDataSource = RealtimeDataSource.MLIT_DIRECT
+                )),
                 damDao = database.damDao(),
                 applicationScope = applicationScope,
                 context = context,
@@ -247,7 +252,10 @@ class MlitMockServerAndroidTest {
                 .fold(ifLeft = { throw AssertionError(it) }, ifRight = { it })
             val viewModel = MainViewModel(
                 context = context,
-                settingsRepository = HiltFakeSettingsRepository(AppSettings(initialAutoUpdateDialogShown = true)),
+                settingsRepository = HiltFakeSettingsRepository(AppSettings(
+                    initialAutoUpdateDialogShown = true,
+                    realtimeDataSource = RealtimeDataSource.MLIT_DIRECT
+                )),
                 damDataRepository = repository,
                 debugLogRepository = HiltFakeDebugLogRepository(),
                 historicalSearchRepository = HiltFakeHistoricalSearchRepository(),
@@ -275,6 +283,7 @@ class MlitMockServerAndroidTest {
         hiltSettingsRepository.updateSettings {
             AppSettings(
                 initialAutoUpdateDialogShown = true,
+                realtimeDataSource = RealtimeDataSource.MLIT_DIRECT,
                 autoUpdateInterval = AutoUpdateInterval.ONE_WEEK,
                 autoUpdateCustomTimingMillisWeekly = jstMillis("2099/01/05 05:15"),
                 autoUpdateCustomTimingMillisDaily = jstMillis("2099/01/01 05:15"),

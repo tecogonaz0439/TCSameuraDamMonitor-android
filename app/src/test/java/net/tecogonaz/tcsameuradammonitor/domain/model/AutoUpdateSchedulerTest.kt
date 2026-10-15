@@ -3,7 +3,6 @@
 
 package net.tecogonaz.tcsameuradammonitor.domain.model
 
-import net.tecogonaz.tcsameuradammonitor.ui.main.effectiveAutoUpdateIntervalForDailyHistory
 import net.tecogonaz.tcsameuradammonitor.util.TimeUtils
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -436,31 +435,6 @@ class AutoUpdateSchedulerTest {
         assertEquals(
             jstMillis("2026/05/18 03:30"),
             result.autoUpdateCustomTimingMillisHourly
-        )
-    }
-
-    @Test
-    fun effectiveAutoUpdateIntervalForDailyHistory_oneHourAndTwelveHoursMapToOneDay() {
-        // 1時間 / 12時間 はクールダウン（保存済み nextUpdateAtEpochMs）により実質1日1回になる（D7）
-        assertEquals(
-            AutoUpdateInterval.ONE_DAY,
-            effectiveAutoUpdateIntervalForDailyHistory(AutoUpdateInterval.ONE_HOUR)
-        )
-        assertEquals(
-            AutoUpdateInterval.ONE_DAY,
-            effectiveAutoUpdateIntervalForDailyHistory(AutoUpdateInterval.TWELVE_HOURS)
-        )
-    }
-
-    @Test
-    fun effectiveAutoUpdateIntervalForDailyHistory_oneDayAndOneWeekKeepTheirInterval() {
-        assertEquals(
-            AutoUpdateInterval.ONE_DAY,
-            effectiveAutoUpdateIntervalForDailyHistory(AutoUpdateInterval.ONE_DAY)
-        )
-        assertEquals(
-            AutoUpdateInterval.ONE_WEEK,
-            effectiveAutoUpdateIntervalForDailyHistory(AutoUpdateInterval.ONE_WEEK)
         )
     }
 

@@ -9,9 +9,5 @@
 .externalNativeBuild
 .cxx
 local.properties
-
-# Release signing (upload key)
 /keystore/
-
-# AI agent work directory
 /work/
