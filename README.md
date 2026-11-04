@@ -3,17 +3,19 @@
 # Sameura Dam Monitor
 
 > [!CAUTION]
-> **Important Notice: Real-Time Data Updates Interrupted (November 4, 2026)**
+> **Important Notice: Temporary Workaround for Sameura Dam Data and Remaining Limitations (Updated November 5, 2026)**
 >
-> Since the morning of November 4, 2026 (Japan Standard Time), real-time data retrieval and updates have been disrupted. Changes to MLIT's Water Information System website appear to have made the existing data retrieval method unavailable.
+> Following the data retrieval disruption caused by changes to MLIT's Water Information System website on November 4, 2026, we have implemented a temporary workaround on this project's cache server (`sudmonitor.kusugami-lab.net`) to retrieve real-time and historical data for Sameura Dam.
 >
-> Water storage rates and other values shown in the app and widgets may reflect the last successfully retrieved data rather than current conditions. Please check the date and time of the displayed data.
+> **Real-time and historical data for Sameura Dam are available through the cache server.** We have confirmed that regular real-time updates are working and that the daily historical data updated successfully after midnight on November 5 (Japan Standard Time). Please use the cache server as the data source in the app settings.
 >
-> In the meantime, please search for an observation station on the [official MLIT Water Information System website](https://www1.river.go.jp/) to view its data.
+> **Direct retrieval from MLIT's Water Information System within the app continues to fail for both real-time and historical data.** Historical searches may also fail when they require direct access to MLIT, such as when the requested period is not available on the cache server.
 >
-> For Sameura Dam, open the [Sameura Dam station page](https://www1.river.go.jp/search/obs?id=1368080700010&komoku_code=05), select "リアルタイムダム諸量（10分値）" (real-time dam data at 10-minute intervals) under "検索方法" (search method), and click "検索開始" (start search) to view the data.
+> This temporary workaround applies to Sameura Dam. Support for other dams and direct retrieval from MLIT has not yet been restored. Please also check the date and time of the displayed data.
 >
-> We are assessing the impact and the changes needed to restore data retrieval. This may take some time, and there is currently no estimated restoration date. Progress and restoration notices will be posted in this README.
+> If data cannot be retrieved in the app, please search for an observation station on the [official MLIT Water Information System website](https://www1.river.go.jp/). Viewing the official website in a browser is separate from direct data retrieval within the app.
+>
+> There is currently no estimated restoration date for the remaining functionality. Progress will be posted in this README.
 >
 > We apologize for the inconvenience.
 
@@ -48,6 +50,8 @@ Install the app from [F-Droid](https://f-droid.org/packages/net.tecogonaz.tcsame
 ## Data Source
 
 The data originates from MLIT's Water Information System. By default, the app retrieves both real-time data and historical data (daily and monthly data used for searches) through the cache server operated by this project. You can select direct retrieval from MLIT in the app settings, and historical searches may access MLIT directly when necessary.
+
+Due to changes to the Water Information System website, direct retrieval from MLIT within the app is currently unavailable for both real-time and historical data. A temporary workaround enables retrieval of Sameura Dam data through the cache server. Historical searches may still fail when they require direct access to MLIT, such as when the requested period is not available on the cache server. Please see the important notice at the top of this README for details.
 
 - `https://sudmonitor.kusugami-lab.net`
 - `https://www1.river.go.jp`
