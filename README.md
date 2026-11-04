@@ -2,6 +2,16 @@
 
 # Sameura Dam Monitor
 
+## Important Notice: Real-Time Data Updates Interrupted (November 4, 2026)
+
+Since the morning of November 4, 2026 (Japan Standard Time), real-time data retrieval and updates have been disrupted. Changes to MLIT's Water Information System website appear to have made the existing data retrieval method unavailable.
+
+Water storage rates and other values shown in the app and widgets may reflect the last successfully retrieved data rather than current conditions. Please check the date and time of the displayed data.
+
+We are assessing the impact and the changes needed to restore data retrieval. This may take some time, and there is currently no estimated restoration date. Progress and restoration notices will be posted in this README.
+
+We apologize for the inconvenience.
+
 **Sameura Dam Monitor** is an Android app that retrieves dam data published through the Water Information System of the Ministry of Land, Infrastructure, Transport and Tourism of Japan and displays the water storage rate and related data for 125 dams across Japan, including Sameura Dam. The Android app is available through F-Droid and as signed APKs through GitHub Releases. Google Play distribution is currently being prepared for open testing.
 
 This app is optimized for udon noodle lovers in Kagawa Prefecture who worry about Sameura Dam's water storage rate.
