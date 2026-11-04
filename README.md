@@ -9,6 +9,10 @@
 >
 > Water storage rates and other values shown in the app and widgets may reflect the last successfully retrieved data rather than current conditions. Please check the date and time of the displayed data.
 >
+> In the meantime, please search for an observation station on the [official MLIT Water Information System website](https://www1.river.go.jp/) to view its data.
+>
+> For Sameura Dam, open the [Sameura Dam station page](https://www1.river.go.jp/search/obs?id=1368080700010&komoku_code=05), select "リアルタイムダム諸量（10分値）" (real-time dam data at 10-minute intervals) under "検索方法" (search method), and click "検索開始" (start search) to view the data.
+>
 > We are assessing the impact and the changes needed to restore data retrieval. This may take some time, and there is currently no estimated restoration date. Progress and restoration notices will be posted in this README.
 >
 > We apologize for the inconvenience.
